@@ -1,0 +1,146 @@
+
+    Demonstrate mathematical function library by calculating
+    inverses and identities of the various functions.
+
+    V104    Iteration variable
+    V103    Increment
+    V101    Loop limit
+    V105    0
+    V106    Current value
+
+A set decimal places to 35
+
+A write numbers with decimal point
+A write in columns
+
+N101 1.1
+N103 0.1
+N104 0.0
+N105 0
+
+(?
++
+L104
+L105
+S000
+S106
+
+A write annotation x = 
+P
+A write new line
+
+
+    Demonstrate ln as inverse of exp
+
+A write annotation                     ln(e(x)) = 
+
+A include cards fixn/exp.ae
+
+A include cards fixn/ln.ae
+
++
+L000
+P
+A write new line
+
+    Demonstrate square root and square as inverse
+
+A write annotation                     sqrt(x)² = 
+L105
+L106
+S000
+
+A include cards fixn/sqrt.ae
+
+×
+L000
+L000
+>
+P
+A write new line
+
+    Demonstrate sin² x + cos² x = 1
+
+A write annotation            sin²(x) + cos²(x) = 
+
++
+L105
+L106
+S000
+
+A include cards fixn/sine.ae
+
+×
+L000
+L000
+>
+S110
+
++
+L105
+L106
+S000
+
+A include cards fixn/cosine.ae
+
+×
+L000
+L000
+>
+S000
+
++
+L000
+L110
+P
+
+A write new line
+
+    Demonstrate arctan(sin(x) / cos(x)) inverse
+
+A write annotation      arctan(sin(x) / cos(x)) = 
++
+L105
+L106
+S000
+
+A include cards fixn/sine.ae
+
++
+L105
+L000
+S110
+
+L105
+L106
+S000
+
+A include cards fixn/cosine.ae
+
+÷
+L110
+<
+L000
+S000'
+
+A include cards fixn/arctan.ae
+
++
+L105
+L000
+P
+
+A write new line
+A write new line
+
+    Update cycle variables and test for completion
+
++
+L104
+L103
+S104
+
+-
+L104
+L101
+)

@@ -1,0 +1,97 @@
+
+    Calculate exp x from series expansion
+
+    exp x = 1 + x/1! + x²/2! + x³/3! ...
+
+    Note that while the numerator is fixed point, the factorial
+    in the denominator is not.  This allows a larger valid range
+    before overflow occurs.
+
+    V0      x (Input), exp x (Output)
+    V1      num
+    V2      sum
+    V3      denom
+    V4      count
+    V5      scratch
+    V6      1
+
+    V9      0
+    V11     100000
+    V12     50000
+
+A set decimal places to +10
+
+N002    1.0
+N003    1
+N004    2
+N006    1
+
+N009    0
+N011 10000000000
+N012 5000000000
+
+    Scale to use 10 more digits for computation
+
+×
+L000
+L011
+S000
+S001
+
+(?
+
+    sum = sum + num / denom
+
+/
+L001
+L003
+S005'
+
++
+L002
+L005
+S002
+
+    num = num * x
+
+*
+L001
+L000
+>
+S001
+
+    denom = denom * count
+
+L003
+L004
+S003
+
+    count = count + 1
+
++
+L004
+L006
+S004
+
+    Cycle if term nonzero
+
+-
+L009
+L005
+)
+
+    Add rounding constant
+
++
+L002
+L012
+S000
+
+    Scale to result
+
+÷
+L000
+L011
+S000'
+
+A set decimal places to -10

@@ -1,0 +1,53 @@
+
+    V104    Iteration variable
+    V103    Increment
+    V101    Loop limit
+    V105    0
+
+A set decimal places to 40
+
+A write numbers with decimal point
+A write in columns
+
+N101 7.0
+N103 1.0
+N104 0
+N105 0
+
+(?
++
+L104
+L105
+S000
+
+A write annotation Sine of 
++
+L000
+P
+A write annotation  = 
+
+A include cards fixn/sine.ae
+
++
+L000
+P
+
+A include cards fixn/arcsine.ae
+
+A write annotation   Arcsine = 
+
++
+L000
+P
+
+A write new line
+
++
+L104
+L103
+S104
+
+-
+L104
+L101
+)

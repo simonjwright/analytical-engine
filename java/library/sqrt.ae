@@ -1,0 +1,120 @@
+
+    Calculate square root by Newton's method
+
+    x² = N
+
+    x[k+1] = (N ÷ x[k] + x[k]) ÷ 2
+
+    V0  N (Input), x (Output)
+    V1  0.5f
+    V2  x[k]
+    V3  scratch
+    V4  0
+    V5  x[k-1]
+    V6  largest positive number
+    V7  10
+    V8  5
+
+    Since multiplication is much faster than division, we
+    substitute a multiplication by fixed point 0.5 for the
+    division by 2.
+
+A set decimal places to +1
+
+    Constants
+
+      123456789012345678901
+N001  0.5
+N004 0
+N006 99999999999999999999999999999999999999999999999999
+N007 10
+N008 5
+
+    Scale to perform calculation with 1 more decimal places
+
+×
+L000
+L007
+S000
+
+    Calculate initial guess as N ÷ 2
+
+×
+L000
+L001
+>
+S002
+
+    Cycle here to perform iterations of Newton's
+    method until the result converges to the
+    square root.
+
+(?
+
+    Save current term for convergence test
+
++
+L002
+L004
+S005
+
+    Compute N÷x[k]
+
+÷
+L000
+<
+L002
+S003'
+
+    Add x[k] to yield N÷x[k] + x[k]
+
++
+L003
+L002
+S003
+
+    Divide by two (actually multiply by 0.5) to
+    obtain next x[k+1]
+
+×
+L003
+L001
+>
+S002
+
+    Subtract x[k] to test for convergence
+
+-
+L002
+L005
+S005
+
+    Cause a run-up if the convergence difference is zero
+
++
+L004
+L005
+{?
+L006
+L005
+}
+
+    Continue iterating if we haven't yet converged
+
+)
+
+    Round result
+
++
+L002
+L008
+S000
+
+    Scale result and leave in V0
+
+÷
+L000
+L007
+S000'
+
+A set decimal places to -1

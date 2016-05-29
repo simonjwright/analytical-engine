@@ -1,0 +1,116 @@
+
+    Demonstrate mathematical function library by calculating
+    a table of values of the various functions.
+
+    V104    Iteration variable
+    V103    Increment
+    V101    Loop limit
+    V105    0
+    V106    Current value
+
+A set decimal places to 7
+
+A write numbers as +9.9999999
+A write in columns
+
+N101 2.1
+N103 0.1
+N104 1.0
+N105 0
+
+A write annotation      x         exp x        ln x       sin x       cos x       atan x      sqrt x
+ Model output line: 1.0000000   2.7182818   0.0000000   0.8414710   0.5403023   0.7853982   1.0000000
+A write new line
+
+(?
++
+L104
+L105
+S000
+S106
+
+P
+
+A write annotation   
+
+A include cards fixn/exp.ae
+
++
+L000
+P
+A write annotation   
+
++
+L106
+L105
+S000
+
+A include cards fixn/ln.ae
+
++
+L000
+P
+A write annotation   
+
+
++
+L106
+L105
+S000
+
+A include cards fixn/sine.ae
+
++
+L000
+P
+A write annotation   
+
++
+L106
+L105
+S000
+
+A include cards fixn/cosine.ae
+
++
+L000
+P
+A write annotation   
+
++
+L106
+L105
+S000
+
+A include cards fixn/arctan.ae
+
++
+L000
+P
+A write annotation   
+
++
+L106
+L105
+S000
+
+A include cards fixn/sqrt.ae
+
++
+L000
+P
+A write annotation   
+
+A write new line
+
+    Update cycle variables and test for completion
+
++
+L104
+L103
+S104
+
+-
+L104
+L101
+)

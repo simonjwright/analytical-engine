@@ -1,0 +1,141 @@
+
+    Calculate cos x from series expansion
+
+    cos x = 1 - x^2÷2! + x^4÷4! - x^6÷6! +
+
+    V0      x (Input), cos x (Output)
+    V1      i
+    V2      j
+    V3      sign of term    s
+    V4      x²              x2
+    V5      current term    term
+    V6      scratch
+    V7      denominator     fact
+    V8      1
+    V9      0
+    V10     scratch
+    V11     100000
+    V12     50000
+    V13     1.
+
+A set decimal places to +5
+
+N001    0
+N002    1
+N003    1
+N007    1
+N008    1
+N009    0
+N011 100000
+N012 50000
+N013 1.0
+
+    Scale input to 5 more digits for computation
+
+*
+L000
+L011
+S000
+
+    x2 = x * x
+
+L000
+L000
+>
+S004
+
+    term = sum = 1
+
++
+L013
+L009
+S005
+S000
+
+(?
+
+    term = term × x2
+
+×
+L005
+L004
+>
+S005
+
+    fact = fact × j
+
+L002
+L007
+S007
+
+    j = j + 1
+
++
+L002
+L008
+S002
+
+    fact = fact × j
+
+×
+L002
+L007
+S007
+
+    j = j + 1
+
++
+L002
+L008
+S002
+
+    s = 0 - s   (flip sign)
+
+-
+L009
+L003
+S003
+
+    temp = term ÷ fact
+
+÷
+L005
+L007
+S010'
+
+    temp2 = s × term
+
+×
+L003
+L010
+S006
+
+    sum = sum + temp
+
++
+L006
+L000
+S000
+
+    Cycle if term nonzero
+
+-
+L009
+L010
+)
+
+    Add rounding constant
+
++
+L000
+L012
+S000
+
+    Scale to result
+
+÷
+L000
+L011
+S000'
+
+A set decimal places to -5

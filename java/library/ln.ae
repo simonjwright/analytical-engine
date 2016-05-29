@@ -1,0 +1,140 @@
+
+    Natural Logarithm
+
+    Values are calculated by the series expansion
+
+        ln x = 2 Sum (((x - 1) ÷ (x + 1))^i) ÷ i, i = 1, 3, 5, 7,...
+
+    Calculation is in 25 decimal place fixed point, then result
+    is rounded to 20 digits.
+  
+        V0  x, Sum accumulator, result
+        V1  1.
+        V2  2.
+        V3  ((x - 1) ÷ (x + 1))²
+        V4  i, initially 1.
+        V5  Current term
+        V6  0
+        V7  100000
+        V8  50000
+
+A set decimal places to +5
+
+    Constant and initial value number cards
+
+N002  2.0
+N004  1.0
+N006 0
+N001  1.0
+N007 100000
+N008 50000
+
+    Scale input to use 5 more digits for computation
+
+×
+L000
+L007
+S000
+
+    V3 = x - 1
+-
+L000
+L001
+S003
+
+    V5 = x + 1
+
++
+L000
+L001
+S005
+
+    V5 = (x - 1) ÷ (x + 1)  This is first term in the summation
+
+÷
+L003
+<
+L005
+S005'
+
+    V3 = ((x - 1) ÷ (x + 1))²
+
+×
+L005
+L005
+>
+S003
+
+    V0 = 0  Clear series sum
+
++
+L006
+L006
+S000
+
+    Begin summation cycle
+
+(?
+
+    V10 = current_term ÷ i
+
+÷
+L005
+<
+L004
+S010'
+
+    V0 = V0 + V10   Add current term to summation
+
++
+L000
+L010
+S000
+
+    V5 = V5 × V3    Multiply by ((x - 1) ÷ (x + 1))²
+
+×
+L005
+L003
+>
+S005
+
+    i = i + 2
+
++
+L004
+L002
+S004
+
+    Test whether we've reached the final term.  A run
+    up occurs when we subtract the final term from zero,
+    stopping the cycle at the first zero term in the series.
+
+-
+L006
+L010
+)
+
+    Multiply series sum by two
+
+×
+L000
+L002
+>
+S000
+
+    Add rounding constant
+
++
+L000
+L008
+S000
+
+    Scale to result
+
+÷
+L000
+L007
+S000'
+
+A set decimal places to -5

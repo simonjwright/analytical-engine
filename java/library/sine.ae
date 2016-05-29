@@ -1,0 +1,139 @@
+
+    Calculate sin x from series expansion
+
+    sin x = x - x^3÷3! + x^5÷5! - x^7÷7! +
+
+    V0      x (Input), sin x (Output)
+    V1      i
+    V2      j
+    V3      sign of term    s
+    V4      x²              x2
+    V5      current term    term
+    V6      scratch
+    V7      denominator     fact
+    V8      1
+    V9      0
+    V10     scratch
+    V11     100000
+    V12     50000
+
+A set decimal places to +5
+
+N001    0
+N002    2
+N003    1
+N007    1
+N008    1
+N009    0
+N011 100000
+N012 50000
+
+    Scale input to use 5 more digits for computation
+
+×
+L000
+L011
+S000
+
+    term = sum = x
+
++
+L000
+L001
+S005
+
+    x2 = x × x
+
+×
+L000
+L000
+>
+S004
+
+(?
+
+    term = term × x2
+
+×
+L005
+L004
+>
+S005
+
+    fact = fact × j
+
+L002
+L007
+S007
+
+    j = j + 1
+
++
+L002
+L008
+S002
+
+    fact = fact × j
+
+×
+L002
+L007
+S007
+
+    j = j + 1
+
++
+L002
+L008
+S002
+
+    s = 0 - s   (flip sign)
+
+-
+L009
+L003
+S003
+
+    temp = term ÷ fact
+
+÷
+L005
+L007
+S010'
+
+    temp2 = s × term
+
+×
+L003
+L010
+S006
+
+    sum = sum + temp
+
++
+L006
+L000
+S000
+
+    Cycle if term nonzero
+
+-
+L009
+L010
+)
+
+    Add rounding constant
+
++
+L000
+L012
+S000
+
+    Scale result
+
+÷
+L000
+L011
+S000'
+
+A set decimal places to -5

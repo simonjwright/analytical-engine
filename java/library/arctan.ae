@@ -1,0 +1,146 @@
+
+    Calculate arctan x from series expansion
+
+    arctan x = (x / (1 + x²)) * (1 + ((2/3)*(x²/(1+x²))) + ((2/3)*(4/5)*(x²/(1+x²))² + ...)
+
+    V0      x (Input), arctan x (Output)
+    V1      x²
+    V2      prod
+    V3      sum (initally 1.)
+    V4      factor
+    V5      term
+    V6      num (initially 0)
+    V7      f (intiially 1.)
+    V8      0
+    V9      scratch
+    V10     1.
+    V11     100000
+    V12     50000
+    V13     2.
+
+A set decimal places to +5
+
+N003 1.0
+N006 0
+N007 1.0
+N008 0
+N010 1.0
+N011 100000
+N012 50000
+N013 2.0
+
+    Scale input to add 5 decimal places for computation
+
+×
+L000
+L011
+S000
+
+    x² = x × x
+
+×
+L000
+L000
+>
+S001
+
+    prod = x / (x² + 1)
+
++
+L001
+L010
+S004
+
+/
+L000
+<
+L004
+S002'
+
+    factor = term = x² / (x² + 1)
+
+/
+L001
+<
+L004
+S004'
+S005'
+
+
+(?
+
+    num = num + 2
+
++
+L006
+L013
+S006
+
+    f = f * (num / (num + 1))
+
+L006
+L010
+S009
+
+/
+L006
+<
+L009
+S009'
+
+*
+L007
+L009
+>
+S007
+
+    sum = sum + (f * factor)
+
+L007
+L004
+>
+S009
+
++
+L003
+L009
+S003
+
+    factor = factor * term
+
+*
+L004
+L005
+>
+S004
+
+    Cycle if (f * factor) nonzero
+
+-
+L008
+L009
+)
+
+    arctan = prod * sum
+
+*
+L002
+L003
+>
+S000
+
+    Add rounding constant
+
++
+L000
+L012
+S000
+
+    Scale to result, lopping off 5 guard digits
+
+÷
+L000
+L011
+S000'
+
+A set decimal places to -5
