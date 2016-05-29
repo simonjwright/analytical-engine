@@ -117,6 +117,6 @@ webrel: all
 
 
 .java.class:
-	javac $(OPTIMISE) -classpath $(CLASSPATH) $*.java
+	javac $(OPTIMISE) -encoding ISO-8859-1 -classpath $(CLASSPATH) $*.java
 
 .SUFFIXES:  .java .class
