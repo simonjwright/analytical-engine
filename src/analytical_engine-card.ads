@@ -1,0 +1,190 @@
+limited with Analytical_Engine.Framework;
+
+private with Ada.Finalization;
+private with Ada.Strings.Unbounded;
+private with Analytical_Engine.Mill;
+private with Analytical_Engine.Store;
+private with GNATCOLL.GMP.Integers;
+private with System;
+
+package Analytical_Engine.Card is
+
+   --  Notes from http://www.fourmilab.ch/analytical_engine/cards.html
+
+   --  Program Cards
+
+   --  A program for The Analytical Engine is composed of a chain of
+   --  cards of different varieties and content. In our emulation of
+   --  the Engine, the chain is represented by a series of lines in a
+   --  text file, one card per line. To run a calculation on the
+   --  Engine, the card chain prepared by the analyst is submitted to
+   --  the Engine's human attendant, who examines it for possible
+   --  errors and requests for actions by the Attendant (for example,
+   --  to include the cards for a previously-prepared standard
+   --  computation such as the extraction of the square root of a
+   --  number at a certain point in the submitted chain).
+
+   --  After completing all requests for attendant assistance in
+   --  preparing the chain and determining that it is free of obvious
+   --  errors, the attendant mounts the chain on the Card Reader and
+   --  causes the Engine to begin to process it. The operation of the
+   --  Engine may be halted by reaching the end of the chain, by a
+   --  card which directs the Engine to stop, or by a card which
+   --  pauses the processing of the Engine and requests (by a visible
+   --  annotation written on the card) the attendant to take some
+   --  action and then resume the operation of the Engine.
+
+   type Card is abstract tagged private;
+   type Card_P is access all Card'Class;
+   procedure Execute
+     (C : Card;
+      In_The_Framework : in out Analytical_Engine.Framework.Instance)
+     is abstract;
+   function Equals (L, R : Card'Class) return Boolean;
+
+   Card_Error : exception;
+
+   function Read (From : String) return Card'Class;
+
+   procedure Trace (C : Card; In_The_Framework : Framework.Instance);
+
+private
+
+   use Ada.Strings.Unbounded;
+   use GNATCOLL.GMP.Integers;
+
+   type Card is abstract tagged record
+      Line_Number : Natural := 0;
+      Source      : Unbounded_String;
+   end record;
+
+   function Equals (L, R : Card'Class) return Boolean is
+     (System."=" (L'Address, R'Address));
+
+   type Big_Integer_P is access Big_Integer; -- Big_Integer is limited
+   type Controlled_Big_Integer is new Ada.Finalization.Controlled with record
+      Number : Big_Integer_P;
+   end record;
+   overriding
+   procedure Adjust (Obj : in out Controlled_Big_Integer); -- deep copy
+   overriding
+   procedure Finalize (Obj : in out Controlled_Big_Integer);
+
+   type Number_Card is new Card with record
+      Target_Column : Store.Column;
+      Value         : Controlled_Big_Integer;
+   end record;
+   overriding
+   procedure Execute (C : Number_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Operation_Card is new Card with record
+      Op : Mill.Operation;
+   end record;
+   overriding
+   procedure Execute (C : Operation_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Variable_Card is new Card with record
+      Axis     : Mill.Axis; -- Ingress axes are to mill, egress to store
+      Column   : Store.Column;
+      Preserve : Boolean;   -- If false and the value is being sent to
+                            -- the mill, the source column is reset to
+                            -- zero after the value has been
+                            -- retrieved.
+   end record;
+   overriding
+   procedure Execute (C : Variable_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Stepping_Card is new Card with record
+      Direction  : Mill.Step;
+      Step_Count : Positive;
+   end record;
+   overriding
+   procedure Execute (C : Stepping_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Combinatorial_Card is new Card with record
+      Advance     : Boolean;
+      Conditional : Boolean;
+      Card_Count  : Positive;
+   end record;
+   overriding
+   procedure Execute (C : Combinatorial_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Action_Kind is (Ring_Bell, Halt_Engine, Print_Last_Result);
+   type Action_Card is new Card with record
+      Act : Action_Kind;
+   end record;
+   overriding
+   procedure Execute (C : Action_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Comment_Card is new Card with null record;
+   overriding
+   procedure Execute (C : Comment_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   type Tracing_Card is new Card with record
+      Tracing : Boolean;
+   end record;
+   overriding
+   procedure Execute (C : Tracing_Card;
+                      In_The_Framework : in out Framework.Instance);
+
+   --  type Curve_Drawing_Card is new Card with private;
+
+   --  type Attendant_Request_Card is abstract new Card with private;
+
+   --  type Attendant_Request_Kind is
+   --    (Calculation_Trace,
+   --     Advancing_Or_Backing_Block,
+   --     Alternation,
+   --     End_Block,
+   --     Library_Inclusion,
+   --     Decimal_Place_Expansion,
+   --     Numeric_Output_Format_As_Picture,
+   --     Numeric_Output_Format_With_Decimal_Point,
+   --     Write_In_Rows,
+   --     Write_In_Columns,
+   --     Write_Annotation,
+   --     Write_New_Line,
+   --     Not_A_Request);
+
+   --  type Attendant_Request_T (Kind : Attendant_Request_Kind) is record
+   --     case Kind is
+   --        when Calculation_Trace =>
+   --           Trace : Boolean;
+   --        when Advancing_Or_Backing_Block =>
+   --           Advancing     : Boolean;
+   --           Conditionally : Boolean;
+   --           Cards         : Positive;
+   --        when Alternation =>
+   --           null;
+   --        when End_Block =>
+   --           End_Advancing : Boolean;
+   --        when Library_Inclusion =>
+   --           Library : Boolean;
+   --           Name    : Unbounded_String;
+   --        when Decimal_Place_Expansion =>
+   --           Places : Positive;
+   --        when Numeric_Output_Format_As_Picture =>
+   --           Picture : Unbounded_String;
+   --        when Numeric_Output_Format_With_Decimal_Point =>
+   --           null;
+   --        when Write_In_Rows =>
+   --           null;
+   --        when Write_In_Columns =>
+   --           null;
+   --        when Write_Annotation =>
+   --           Annotation : Unbounded_String;
+   --        when Write_New_Line =>
+   --           null;
+   --        when Not_A_Request =>
+   --           null;
+   --     end case;
+   --  end record;
+
+end Analytical_Engine.Card;
