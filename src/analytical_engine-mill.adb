@@ -174,7 +174,9 @@ package body Analytical_Engine.Mill is
       end loop;
       case Direction is
          when Up =>
-            pragma Assert (This.Op = Divide);
+            if This.Op /= Divide then
+               raise Mill_Error with "Step up when operation not /";
+            end if;
             --  Scale the ingress axes
             declare
                Tmp : Big_Integer;
@@ -197,7 +199,9 @@ package body Analytical_Engine.Mill is
             end;
          when Down =>
             --  Scale the egress axes
-            pragma Assert (This.Op = Multiply);
+            if This.Op /= Multiply then
+               raise Mill_Error with "Step down when operation not *";
+            end if;
             declare
                Input : Big_Integer;
                Result : Big_Integer;

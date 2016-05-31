@@ -34,6 +34,7 @@ use Analytical_Engine;
 procedure Aes is
 
    Command_Line_Config : GNAT.Command_Line.Command_Line_Configuration;
+   Tracing : aliased Boolean := False;
 
    Panel : constant Annunciator_Panel.Class_P
      := new Annunciator_Panel.Command_Line.Instance;
@@ -41,22 +42,28 @@ procedure Aes is
      := Framework.Create
        (With_Panel => Panel,
         With_Output => new Output.Printer.Instance (Panel));
-   R : constant Card_Reader.Instance_P := F.Card_Reader;
 
 begin
+   GNAT.Command_Line.Set_Usage
+     (Command_Line_Config,
+      Usage => "[card-chain-file]",
+      Help  =>
+        "Run the chain of cards in card-chain-file (or standard input)");
+   GNAT.Command_Line.Define_Switch
+     (Command_Line_Config,
+      Tracing'Access,
+      "-t",
+      Long_Switch => "--trace",
+      Help => "Trace execution (like card T1)");
+   GNAT.Command_Line.Getopt (Command_Line_Config);
 
-   GNAT.Command_Line.Set_Usage (Command_Line_Config,
-                                Usage => "card-file",
-                                Help  => "Run the chain of cards");
-   --  There are no specific switches as yet, and there's a bug in
-   --  Getopt.
-   --  GNAT.Command_Line.Getopt (Command_Line_Config);
+   Panel.Set_Tracing (Tracing);
 
    declare
       Chain_File_Name : constant String := GNAT.Command_Line.Get_Argument;
    begin
       if Chain_File_Name = "" then
-         R.Add_Cards (Ada.Text_IO.Standard_Input);
+         F.Card_Reader.Add_Cards (Ada.Text_IO.Standard_Input);
       else
          declare
             Chain_File : Ada.Text_IO.File_Type;
@@ -64,7 +71,7 @@ begin
             Ada.Text_IO.Open (Chain_File,
                               Name => Chain_File_Name,
                               Mode => Ada.Text_IO.In_File);
-            R.Add_Cards (Chain_File);
+            F.Card_Reader.Add_Cards (Chain_File);
             Ada.Text_IO.Close (Chain_File);
          exception
             when E :
@@ -77,4 +84,7 @@ begin
       end if;
       F.Run;
    end;
+exception
+   when GNAT.Command_Line.Exit_From_Command_Line
+     | GNAT.Command_Line.Invalid_Switch => null;
 end Aes;
