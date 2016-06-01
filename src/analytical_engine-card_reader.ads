@@ -67,7 +67,4 @@ private
         Chain  : Chains.Vector;
      end record;
 
-   overriding
-   procedure Initialize (This : in out Instance);
-
 end Analytical_Engine.Card_Reader;

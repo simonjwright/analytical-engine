@@ -50,10 +50,4 @@ package body Analytical_Engine.Store is
       Set (Result, To => This.Columns (Col));
    end Get;
 
-   procedure Initialize (This : in out Instance)
-   is
-   begin
-      This.Panel.Log_Attendant_Message ("store initialized");
-   end Initialize;
-
 end Analytical_Engine.Store;

@@ -33,7 +33,4 @@ private
    type Instance (Panel : not null Annunciator_Panel.Class_P)
      is new Ada.Finalization.Limited_Controlled with null record;
 
-   overriding
-   procedure Initialize (This : in out Instance);
-
 end Analytical_Engine.Attendant;

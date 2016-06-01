@@ -235,7 +235,6 @@ package body Analytical_Engine.Mill is
       Set (This.Ingress_Primed, Zero);
       Set (This.Egress, Zero);
       Set (This.Egress_Primed, Zero);
-      This.Panel.Log_Attendant_Message ("mill initialized");
    end Initialize;
 
    procedure Clear_Ingress (This : in out Instance'Class)

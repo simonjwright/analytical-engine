@@ -33,7 +33,4 @@ private
 
    type Instance is new Annunciator_Panel.Instance with null record;
 
-   overriding
-   procedure Initialize (This : in out Instance);
-
 end Analytical_Engine.Annunciator_Panel.Command_Line;

@@ -34,7 +34,4 @@ private
      is new Analytical_Engine.Output.Instance (Panel => Panel)
      with null record;
 
-   overriding
-   procedure Initialize (This : in out Instance);
-
 end Analytical_Engine.Output.Printer;

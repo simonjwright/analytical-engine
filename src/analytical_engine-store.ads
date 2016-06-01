@@ -48,7 +48,4 @@ private
         Columns : Column_Array;
      end record;
 
-   overriding
-   procedure Initialize (This : in out Instance);
-
 end Analytical_Engine.Store;

@@ -93,10 +93,4 @@ package body Analytical_Engine.Card_Reader is
       This.Halted := True;
    end Halt;
 
-   procedure Initialize (This : in out Instance)
-   is
-   begin
-      This.Panel.Log_Attendant_Message ("card_reader initialized");
-   end Initialize;
-
 end Analytical_Engine.Card_Reader;
