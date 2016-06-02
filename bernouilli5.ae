@@ -5,7 +5,7 @@
  I've scaled by 10 places where real arithmetic is implied
  (i.e. dividends are shifted up 10 digits unless already scaled,
  products are shifted down by 10 digits if both multiplicands are
- scaled). Divide the result by 10**10 to get B7.
+ scaled). Divide the result by 10**10 to get B9.
 
  A bug in operation 4 has been fixed (the comment requires V4/V5,
  AAL's code does V5/V4).
