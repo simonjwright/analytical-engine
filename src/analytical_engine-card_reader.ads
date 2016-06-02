@@ -19,7 +19,6 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Ada.Text_IO;
 with Analytical_Engine.Annunciator_Panel;
 with Analytical_Engine.Attendant;
 with Analytical_Engine.Card;
@@ -41,8 +40,7 @@ package Analytical_Engine.Card_Reader is
    procedure Reset (This : out Instance);
 
    procedure Add_Cards (This : in out Instance; From_File_Named : String);
-
-   procedure Add_Cards (This : in out Instance; From : Ada.Text_IO.File_Type);
+   --  If From_File_Named is the empty string, use standard input.
 
    procedure Execute (This             : in out Instance;
                       In_The_Framework : in out Framework.Instance);

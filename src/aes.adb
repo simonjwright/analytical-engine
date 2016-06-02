@@ -25,6 +25,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.Command_Line;
 
 with Analytical_Engine.Annunciator_Panel.Command_Line;
+with Analytical_Engine.Card;
 with Analytical_Engine.Card_Reader;
 with Analytical_Engine.Framework;
 with Analytical_Engine.Output.Printer;
@@ -62,29 +63,20 @@ begin
    declare
       Chain_File_Name : constant String := GNAT.Command_Line.Get_Argument;
    begin
-      if Chain_File_Name = "" then
-         F.Card_Reader.Add_Cards (Ada.Text_IO.Standard_Input);
-      else
-         declare
-            Chain_File : Ada.Text_IO.File_Type;
-         begin
-            Ada.Text_IO.Open (Chain_File,
-                              Name => Chain_File_Name,
-                              Mode => Ada.Text_IO.In_File);
-            F.Card_Reader.Add_Cards (Chain_File);
-            Ada.Text_IO.Close (Chain_File);
-         exception
-            when E :
-              Ada.IO_Exceptions.Name_Error | Ada.IO_Exceptions.Use_Error =>
-               Ada.Text_IO.Put_Line
-                 (Ada.Text_IO.Standard_Error,
-                  "Couldn't open " & Ada.Exceptions.Exception_Message (E));
-               return;
-         end;
-      end if;
-      F.Run;
+      F.Card_Reader.Add_Cards (Chain_File_Name);
    end;
+
+   F.Run;
 exception
+   when E :
+     Ada.IO_Exceptions.Name_Error | Ada.IO_Exceptions.Use_Error =>
+      Ada.Text_IO.Put_Line
+        (Ada.Text_IO.Standard_Error,
+         "Couldn't open " & Ada.Exceptions.Exception_Message (E));
+   when E : Analytical_Engine.Card.Card_Error =>
+      Ada.Text_IO.Put_Line
+        (Ada.Text_IO.Standard_Error,
+         "Card error: " & Ada.Exceptions.Exception_Message (E));
    when GNAT.Command_Line.Exit_From_Command_Line
      | GNAT.Command_Line.Invalid_Switch => null;
 end Aes;

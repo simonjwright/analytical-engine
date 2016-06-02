@@ -180,8 +180,7 @@ package body Analytical_Engine.Card is
                      elsif Direction = 'B' then
                         C.Advance := False;
                      else
-                        raise Card_Error
-                          with "invalid combinatorial card " & From;
+                        raise Card_Error with "invalid combinatorial card";
                      end if;
                   end;
                   Start := Start + 1;
@@ -191,8 +190,7 @@ package body Analytical_Engine.Card is
                   elsif From (Start) in '0' .. '9' | '+' then
                      C.Conditional := False;
                   else
-                     raise Card_Error
-                       with "invalid combinatorial card " & From;
+                     raise Card_Error with "invalid combinatorial card";
                   end if;
                   if Start > From'Last then
                      raise Constraint_Error;
@@ -209,15 +207,13 @@ package body Analytical_Engine.Card is
                         First  => First,
                         Last   => Last);
                      if Last = 0 then
-                        raise Card_Error
-                          with "invalid combinatorial card " & From;
+                        raise Card_Error with "invalid combinatorial card";
                      end if;
                      C.Card_Count := Positive'Value (From (First .. Last));
                   end;
                exception
                   when Constraint_Error =>
-                     raise Card_Error
-                       with "invalid combinatorial card " & From;
+                     raise Card_Error with "invalid combinatorial card";
                end;
             end return;
          when 'B' | 'P' | 'H' =>
@@ -275,7 +271,12 @@ package body Analytical_Engine.Card is
    begin
       if In_The_Framework.Panel.Tracing then
          In_The_Framework.Panel.Log_Trace_Message
-           ("Card: " & To_String (C.Source));
+           ("Card: "
+              & To_String (C.Source_File)
+              & ":"
+              & Ada.Strings.Fixed.Trim (C.Line_Number'Img, Ada.Strings.Both)
+              & " "
+              & To_String (C.Source));
       end if;
    end Trace;
 

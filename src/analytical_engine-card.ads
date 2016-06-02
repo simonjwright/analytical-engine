@@ -19,10 +19,11 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
+with Ada.Strings.Unbounded;
+
 limited with Analytical_Engine.Framework;
 
 private with Ada.Finalization;
-private with Ada.Strings.Unbounded;
 private with Analytical_Engine.Mill;
 private with Analytical_Engine.Store;
 private with GNATCOLL.GMP.Integers;
@@ -30,7 +31,8 @@ private with System;
 
 package Analytical_Engine.Card is
 
-   --  Notes from http://www.fourmilab.ch/analytical_engine/cards.html
+   --  Notes from http://www.fourmilab.ch/analytical_engine/cards.html.
+   --  XXX This is the intention!
 
    --  Program Cards
 
@@ -55,8 +57,13 @@ package Analytical_Engine.Card is
    --  annotation written on the card) the attendant to take some
    --  action and then resume the operation of the Engine.
 
-   type Card is abstract tagged private;
+   type Card is abstract tagged record
+      Line_Number : Natural := 0;
+      Source_File : Ada.Strings.Unbounded.Unbounded_String;
+      Source      : Ada.Strings.Unbounded.Unbounded_String;
+   end record;
    type Card_P is access all Card'Class;
+
    procedure Execute
      (C : Card;
       In_The_Framework : in out Analytical_Engine.Framework.Instance)
@@ -73,11 +80,6 @@ private
 
    use Ada.Strings.Unbounded;
    use GNATCOLL.GMP.Integers;
-
-   type Card is abstract tagged record
-      Line_Number : Natural := 0;
-      Source      : Unbounded_String;
-   end record;
 
    function Equals (L, R : Card'Class) return Boolean is
      (System."=" (L'Address, R'Address));
