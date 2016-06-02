@@ -1,0 +1,338 @@
+ This is meant to be an extension of AAL's program for computing what
+ she called the fourth Bernouilli number B9 (what Wikipedia would call
+ B10).
+
+ I've scaled by 10 places where real arithmetic is implied
+ (i.e. dividends are shifted up 10 digits unless already scaled,
+ products are shifted down by 10 digits if both multiplicands are
+ scaled). Divide the result by 10**10 to get B7.
+
+ A bug in operation 4 has been fixed (the comment requires V4/V5,
+ AAL's code does V5/V4).
+
+ Another bug was at operation 24: the value accumulated in V13 is *the
+ negative* of the required value, see Note G Equation 9.
+
+ useful constants
+n001 1
+n002 2
+
+ which bernouilli number is required?
+n003 5
+
+ b0 = 1
+ b1 =  0.1666666666
+n021    01666666667
+ b3 = -0.0333333333
+n022   -00333333333
+ b5 =  0.0238095238
+n023    00238095238
+ b7 = -0.0333333333
+n024   -00333333333
+ b9 =  0.0757575758 (expected!)
+
+ operation 1
+*
+l002
+l003
+s004
+s005
+s006
+
+ operation 2
+-
+l004
+l001
+s004
+
+ operation 3
++
+l005
+l001
+s005
+
+ operation 4, with bug fixed
+/
+z004
+<10
+z005
+s011'
+
+ operation 5
+/
+l011
+l002
+s011'
+
+ operation 6
+-
+l013
+z011
+s013
+
+ operation 7
+l003
+l001
+s010
+ --------------------
+ operation 8
++
+l002
+l007
+s007
+
+ operation 9
+/
+l006
+<10
+l007
+s011'
+
+ operation 10, using b1 (v021)
+*
+l021
+l011
+>10
+s012
+
+ operation 11
++
+z012
+l013
+s013
+
+ operation 12
+-
+l010
+l001
+s010
+ --------------------
+ operation 13
+-
+l006
+l001
+s006
+
+ operation 14
++
+l001
+l007
+s007
+
+ operation 15
+/
+l006
+<10
+l007
+s008'
+
+ operation 16
+*
+z008
+l011
+>10
+s011
+
+ operation 17
+-
+l006
+l001
+s006
+
+ operation 18
++
+l001
+l007
+s007
+
+ operation 19
+/
+l006
+<10
+l007
+s009'
+
+ operation 20
+*
+z009
+l011
+>10
+s011
+
+ operation 21, using b3 (v022)
+*
+l022
+l011
+>10
+s012
+
+ operation 22
++
+z012
+l013
+s013
+
+ operation 23
+-
+l010
+l001
+s010
+ .................... second repeat starts here
+ operation 13
+-
+l006
+l001
+s006
+
+ operation 14
++
+l001
+l007
+s007
+
+ operation 15
+/
+l006
+<10
+l007
+s008'
+
+ operation 16
+*
+z008
+l011
+>10
+s011
+
+ operation 17
+-
+l006
+l001
+s006
+
+ operation 18
++
+l001
+l007
+s007
+
+ operation 19
+/
+l006
+<10
+l007
+s009'
+
+ operation 20
+*
+z009
+l011
+>10
+s011
+
+ operation 21 (NB using b5, v023 this time)
+*
+l023
+l011
+>10
+s012
+
+ operation 22
++
+z012
+l013
+s013
+
+ operation 23
+-
+l010
+l001
+s010
+ .................... first repeat starts here
+ operation 13
+-
+l006
+l001
+s006
+
+ operation 14
++
+l001
+l007
+s007
+
+ operation 15
+/
+l006
+<10
+l007
+s008'
+
+ operation 16
+*
+z008
+l011
+>10
+s011
+
+ operation 17
+-
+l006
+l001
+s006
+
+ operation 18
++
+l001
+l007
+s007
+
+ operation 19
+/
+l006
+<10
+l007
+s009'
+
+ operation 20
+*
+z009
+l011
+>10
+s011
+
+ operation 21 (NB using b7, v024 this time)
+*
+l024
+l011
+>10
+s012
+
+ operation 22
++
+z012
+l013
+s013
+
+ operation 23
+-
+l010
+l001
+s010
+ --------------------
+ operation 24, with bug fixed
+-
+l025
+l013
+s025
+ the result!!
+p
+
+ operation 25
++
+l001
+l003
+s003
+ -- and clear V6, V7 - why?
+n006 0
+n007 0
