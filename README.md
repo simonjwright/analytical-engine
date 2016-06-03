@@ -47,8 +47,25 @@ reasonably straightforward to build.
 ## Programming Cards
 
 The design here is as in the [Fourmilab Java implementation][]. To
-date only the card types up to and including Comment Cards have been
-implemented.
+date only the card types below have been implemented:
+
+  * Number Cards
+  * Operation Cards
+  * Variable Cards
+  * Stepping Up and Down Cards
+  * Combinatorial Cards
+  * Action Cards
+  * Comment Cards
+
+These card types have not been implemented (yet):
+
+  * Curve Drawing Cards
+  * Attendant Request Cards (but Calculation Trace Cards _are_ in)
+    * Advancing and Backing Block Cards
+    * Card Library Inclusion Requests
+    * Decimal Place Expansion Cards
+    * Numeric Output Format Cards
+    * Output Annotation Cards
 
 As a minor change, lower case can be used: `n001 42` is
 acceptable (it stores 42 into column 1).
