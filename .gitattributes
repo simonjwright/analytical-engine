@@ -1,0 +1,4 @@
+# The fourmilab/ Java code shouldn't affect Github's opinion of this
+# project's language.
+
+fourmilab/* linguist-vendored

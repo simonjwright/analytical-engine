@@ -10,7 +10,7 @@ line based version.
 ## Copying
 
 The Java source of the Fourmilab emulator is included in this
-repository for reference (in the `java/` subdirectory); the
+repository for reference (in the `fourmilab/` subdirectory); the
 Analytical Engine code's author states _Emulator source code is
 intended for experienced Java developers, and is utterly
 unsupported. The program is in the public domain and you can do
