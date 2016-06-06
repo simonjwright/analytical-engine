@@ -217,13 +217,21 @@ package body Analytical_Engine.Card is
                end;
             end return;
          when 'B' | 'P' | 'H' =>
-            return C : Action_Card do
+            return C : Action_Card
+              (Act => (case Leading is
+                          when 'B'    => Ring_Bell,
+                          when 'P'    => Print_Last_Result,
+                          when 'H'    => Halt_Engine,
+                          when others => raise Program_Error)) do
                C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
-               C.Act := (case Leading is
-                            when 'B'    => Ring_Bell,
-                            when 'P'    => Print_Last_Result,
-                            when 'H'    => Halt_Engine,
-                            when others => raise Program_Error);
+               case Leading is
+                  when 'H' =>
+                     C.Msg := To_Unbounded_String
+                       (Ada.Strings.Fixed.Trim
+                          (From (From'First + 1 .. From'Last),
+                        Ada.Strings.Both));
+                  when others => null;
+               end case;
             end return;
          when 'T' =>
             return C : Tracing_Card do
@@ -265,26 +273,10 @@ package body Analytical_Engine.Card is
       Free (Obj.Number);
    end Finalize;
 
-   procedure Trace (C : Card;
-                    In_The_Framework : Framework.Instance)
-   is
-   begin
-      if In_The_Framework.Panel.Tracing then
-         In_The_Framework.Panel.Log_Trace_Message
-           ("Card: "
-              & To_String (C.Source_File)
-              & ":"
-              & Ada.Strings.Fixed.Trim (C.Line_Number'Img, Ada.Strings.Both)
-              & " "
-              & To_String (C.Source));
-      end if;
-   end Trace;
-
    procedure Execute (C : Number_Card;
                       In_The_Framework : in out Framework.Instance)
    is
    begin
-      C.Trace (In_The_Framework);
       In_The_Framework.Store.Set (Col => C.Target_Column,
                                   To => C.Value.Number.all);
    end Execute;
@@ -293,7 +285,6 @@ package body Analytical_Engine.Card is
                       In_The_Framework : in out Framework.Instance)
    is
    begin
-      C.Trace (In_The_Framework);
       In_The_Framework.Mill.Set_Operation (C.Op);
    end Execute;
 
@@ -302,7 +293,6 @@ package body Analytical_Engine.Card is
    is
       Value : Big_Integer;
    begin
-      C.Trace (In_The_Framework);
       case C.Axis is
          when Mill.Ingress =>
             In_The_Framework.Store.Get (Col => C.Column, Result => Value);
@@ -329,7 +319,6 @@ package body Analytical_Engine.Card is
                       In_The_Framework : in out Framework.Instance)
    is
    begin
-      C.Trace (In_The_Framework);
       In_The_Framework.Mill.Step_Axes (Direction => C.Direction,
                                        Amount => C.Step_Count);
    end Execute;
@@ -338,7 +327,6 @@ package body Analytical_Engine.Card is
                       In_The_Framework : in out Framework.Instance)
    is
    begin
-      C.Trace (In_The_Framework);
       if not C.Conditional or else In_The_Framework.Mill.Run_Up_Set then
          In_The_Framework.Card_Reader.Step
            (if C.Advance then C.Card_Count else -C.Card_Count);
@@ -349,12 +337,13 @@ package body Analytical_Engine.Card is
                       In_The_Framework : in out Framework.Instance)
    is
    begin
-      C.Trace (In_The_Framework);
       case C.Act is
          when Halt_Engine =>
+            In_The_Framework.Panel.Log_Attendant_Message
+              ("Halt: " & To_String (C.Msg));
             In_The_Framework.Card_Reader.Halt;
          when Ring_Bell =>
-            In_The_Framework.Panel.Log_Attendant_Message ("ting!");
+            In_The_Framework.Panel.Log_Attendant_Message ("Ting!");
          when Print_Last_Result =>
             declare
                Result : Big_Integer;
@@ -367,11 +356,7 @@ package body Analytical_Engine.Card is
 
    procedure Execute (C : Comment_Card;
                       In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      C.Trace (In_The_Framework);
-      null;
-   end Execute;
+     is null;
 
    procedure Execute (C : Tracing_Card;
                       In_The_Framework : in out Framework.Instance)

@@ -111,6 +111,18 @@ package body Analytical_Engine.Card_Reader is
          declare
             C : constant Card.Card'Class := This.Chain (This.Index);
          begin
+            if In_The_Framework.Panel.Tracing then
+               In_The_Framework.Panel.Log_Trace_Message
+                 ("Card"
+                    & This.Index'Img
+                    & " ("
+                    & Ada.Strings.Unbounded.To_String (C.Source_File)
+                    & ":"
+                    & Ada.Strings.Fixed.Trim (C.Line_Number'Img,
+                                              Ada.Strings.Both)
+                    & ") "
+                    & Ada.Strings.Unbounded.To_String (C.Source));
+            end if;
             This.Index := This.Index + 1;
             C.Execute (In_The_Framework);
          end;

@@ -74,8 +74,6 @@ package Analytical_Engine.Card is
 
    function Read (From : String) return Card'Class;
 
-   procedure Trace (C : Card; In_The_Framework : Framework.Instance);
-
 private
 
    use Ada.Strings.Unbounded;
@@ -138,8 +136,13 @@ private
                       In_The_Framework : in out Framework.Instance);
 
    type Action_Kind is (Ring_Bell, Halt_Engine, Print_Last_Result);
-   type Action_Card is new Card with record
-      Act : Action_Kind;
+   type Action_Card (Act : Action_Kind) is new Card with record
+      case Act is
+         when Halt_Engine =>
+            Msg : Ada.Strings.Unbounded.Unbounded_String;
+         when others =>
+            null;
+      end case;
    end record;
    overriding
    procedure Execute (C : Action_Card;
