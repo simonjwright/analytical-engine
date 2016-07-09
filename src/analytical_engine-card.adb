@@ -21,9 +21,9 @@
 
 with Ada.Characters.Handling;
 with Ada.Strings.Fixed;
-with Ada.Strings.Maps;
 with Ada.Unchecked_Deallocation;
 
+with Analytical_Engine.Card.Attendant_Request;
 with Analytical_Engine.Framework;
 
 package body Analytical_Engine.Card is
@@ -38,10 +38,6 @@ package body Analytical_Engine.Card is
 
    function Read (From : String) return Card'Class
    is
-      White_Space : constant Ada.Strings.Maps.Character_Set
-        := Ada.Strings.Maps.To_Set (" " & ASCII.HT);
-      White_Space_Or_Plus : constant Ada.Strings.Maps.Character_Set
-        := Ada.Strings.Maps.To_Set (" +" & ASCII.HT);
       Start : Positive := From'First;
       Leading : Character;
    begin
@@ -252,6 +248,8 @@ package body Analytical_Engine.Card is
                   C.Tracing := Natural'Value (From (First .. Last)) /= 0;
                end;
             end return;
+         when 'A' =>
+            return Attendant_Request.Read (From);
          when others =>
             raise Card_Error with "unrecognised card";
       end case;
@@ -349,7 +347,7 @@ package body Analytical_Engine.Card is
                Result : Big_Integer;
             begin
                In_The_Framework.Mill.Get_Egress (Result);
-               In_The_Framework.Output.Output (Image (Result));
+               In_The_Framework.Output.Output (Result);
             end;
       end case;
    end Execute;

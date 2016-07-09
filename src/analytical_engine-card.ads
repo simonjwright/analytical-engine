@@ -24,6 +24,7 @@ with Ada.Strings.Unbounded;
 limited with Analytical_Engine.Framework;
 
 private with Ada.Finalization;
+private with Ada.Strings.Maps;
 private with Analytical_Engine.Mill;
 private with Analytical_Engine.Store;
 private with GNATCOLL.GMP.Integers;
@@ -31,8 +32,7 @@ private with System;
 
 package Analytical_Engine.Card is
 
-   --  Notes from http://www.fourmilab.ch/analytical_engine/cards.html.
-   --  XXX This is the intention!
+   --  Notes from http://www.fourmilab.ch/babbage/cards.html.
 
    --  Program Cards
 
@@ -81,6 +81,11 @@ private
 
    function Equals (L, R : Card'Class) return Boolean is
      (System."=" (L'Address, R'Address));
+
+   White_Space : constant Ada.Strings.Maps.Character_Set
+     := Ada.Strings.Maps.To_Set (" " & ASCII.HT);
+   White_Space_Or_Plus : constant Ada.Strings.Maps.Character_Set
+     := Ada.Strings.Maps.To_Set (" +" & ASCII.HT);
 
    type Big_Integer_P is access Big_Integer; -- Big_Integer is limited
    type Controlled_Big_Integer is new Ada.Finalization.Controlled with record
@@ -162,55 +167,6 @@ private
 
    --  type Curve_Drawing_Card is new Card with private;
 
-   --  type Attendant_Request_Card is abstract new Card with private;
-
-   --  type Attendant_Request_Kind is
-   --    (Calculation_Trace,
-   --     Advancing_Or_Backing_Block,
-   --     Alternation,
-   --     End_Block,
-   --     Library_Inclusion,
-   --     Decimal_Place_Expansion,
-   --     Numeric_Output_Format_As_Picture,
-   --     Numeric_Output_Format_With_Decimal_Point,
-   --     Write_In_Rows,
-   --     Write_In_Columns,
-   --     Write_Annotation,
-   --     Write_New_Line,
-   --     Not_A_Request);
-
-   --  type Attendant_Request_T (Kind : Attendant_Request_Kind) is record
-   --     case Kind is
-   --        when Calculation_Trace =>
-   --           Trace : Boolean;
-   --        when Advancing_Or_Backing_Block =>
-   --           Advancing     : Boolean;
-   --           Conditionally : Boolean;
-   --           Cards         : Positive;
-   --        when Alternation =>
-   --           null;
-   --        when End_Block =>
-   --           End_Advancing : Boolean;
-   --        when Library_Inclusion =>
-   --           Library : Boolean;
-   --           Name    : Unbounded_String;
-   --        when Decimal_Place_Expansion =>
-   --           Places : Positive;
-   --        when Numeric_Output_Format_As_Picture =>
-   --           Picture : Unbounded_String;
-   --        when Numeric_Output_Format_With_Decimal_Point =>
-   --           null;
-   --        when Write_In_Rows =>
-   --           null;
-   --        when Write_In_Columns =>
-   --           null;
-   --        when Write_Annotation =>
-   --           Annotation : Unbounded_String;
-   --        when Write_New_Line =>
-   --           null;
-   --        when Not_A_Request =>
-   --           null;
-   --     end case;
-   --  end record;
+   --  Attendant cards: see Analytical_Engine.Card.Attendant_Request.
 
 end Analytical_Engine.Card;

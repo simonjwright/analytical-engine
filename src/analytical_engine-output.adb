@@ -19,34 +19,25 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Analytical_Engine.Annunciator_Panel;
-with Ada.Finalization;
-with Ada.Strings.Unbounded;
-with GNATCOLL.GMP.Integers;
-
-package Analytical_Engine.Output is
-
-   type Instance (Panel : not null Annunciator_Panel.Class_P)
-     is abstract new Ada.Finalization.Limited_Controlled with private;
-   type Class_P is access all Instance'Class;
-
-   procedure Output
-     (To : Instance; S : String) is abstract;
-   procedure Output
-     (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer) is abstract;
+package body Analytical_Engine.Output is
 
    procedure Set_Picture (This : in out Instance;
-                          To : Ada.Strings.Unbounded.Unbounded_String);
-   procedure Clear_Picture (This : in out Instance);
+                          To : Ada.Strings.Unbounded.Unbounded_String)
+   is
+   begin
+      This.Picture := To;
+   end Set_Picture;
 
-   procedure Writing_Style (This : in out Instance; In_Rows : Boolean);
+   procedure Clear_Picture (This : in out Instance)
+   is
+   begin
+      This.Picture := Ada.Strings.Unbounded.Null_Unbounded_String;
+   end Clear_Picture;
 
-private
-
-   type Instance (Panel : not null Annunciator_Panel.Class_P)
-     is abstract new Ada.Finalization.Limited_Controlled with record
-        Picture : Ada.Strings.Unbounded.Unbounded_String;
-        In_Rows : Boolean := True;
-     end record;
+   procedure Writing_Style (This : in out Instance; In_Rows : Boolean)
+   is
+   begin
+      This.In_Rows := In_Rows;
+   end Writing_Style;
 
 end Analytical_Engine.Output;

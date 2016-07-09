@@ -24,9 +24,84 @@ package body Analytical_Engine.Output.Printer is
 
    procedure Output (To : Instance; S : String)
    is
-      pragma Unreferenced (To);
    begin
-      Put_Line (S);
+      if S = (1 => ASCII.LF) then
+         New_Line;
+      else
+         Put (S);
+         if To.In_Rows then
+            New_Line;
+         end if;
+      end if;
+   end Output;
+
+   procedure Output
+     (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer)
+   is
+      Picture : constant String
+        := Ada.Strings.Unbounded.To_String (To.Picture);
+   begin
+      if Picture'Length = 0 then
+         To.Output (GNATCOLL.GMP.Integers.Image (I));
+      else
+         declare
+            use type GNATCOLL.GMP.Integers.Big_Integer;
+            Negative : constant Boolean := I < 0;
+            Image : constant String := GNATCOLL.GMP.Integers.Image (abs I);
+            Index : Natural := Image'Length;
+            Sign_Output : Boolean := False;
+            Result : Ada.Strings.Unbounded.Unbounded_String;
+            use type Ada.Strings.Unbounded.Unbounded_String;
+         begin
+            for C of reverse Picture loop
+               case C is
+                  when '9' =>
+                     --  Digit, unconditionally
+                     if Index = 0 then
+                        Result := '0' & Result;
+                     else
+                        Result := Image (Index) & Result;
+                        Index := Index - 1;
+                     end if;
+                  when '#' =>
+                     --  Digit, if number not exhausted
+                     if Index > 0 then
+                        Result := Image (Index) & Result;
+                        Index := Index - 1;
+                     end if;
+                  when ',' =>
+                     --  Comma, if digits remain to be output
+                     if Index > 0
+                       or else (for some C of Picture => C = '9')
+                     then
+                        Result := ',' & Result;
+                     end if;
+                  when '-' =>
+                     --  Sign, if negative
+                     if Negative then
+                        Result := '-' & Result;
+                        Sign_Output := True;
+                     end if;
+                  when '@' =>
+                     --  Plus or minus sign
+                     Result := (if Negative then '-' else '+') & Result;
+                     Sign_Output := True;
+                  when '+' =>
+                     --  Sign if negative, space if positive
+                     Result := (if Negative then '-' else ' ') & Result;
+                     Sign_Output := True;
+                  when others =>
+                     Result := C & Result;
+               end case;
+            end loop;
+            --  insert any number "left over"
+            Result := Image (1 .. Index) & Result;
+            if Negative and not Sign_Output then
+               Result := '-' & Result;
+            end if;
+            To.Output (Ada.Strings.Unbounded.To_String (Result));
+         end;
+      end if;
    end Output;
 
 end Analytical_Engine.Output.Printer;

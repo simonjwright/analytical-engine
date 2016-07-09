@@ -26,7 +26,11 @@ package Analytical_Engine.Output.Printer is
    is new Analytical_Engine.Output.Instance with private;
 
    overriding
-   procedure Output (To : Instance; S : String);
+   procedure Output
+     (To : Instance; S : String);
+   overriding
+   procedure Output
+     (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer);
 
 private
 

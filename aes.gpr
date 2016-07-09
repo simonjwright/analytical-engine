@@ -23,6 +23,9 @@ with "gnatcoll_gmp";
 
 project Aes is
 
+   type Optimization is ("debug", "performance");
+   Opt : Optimization := external ("OPTIMIZATION", "debug");
+
    for Source_Dirs use ("src");
    for Object_Dir use ".build";
    for Exec_Dir use ".";
@@ -30,15 +33,18 @@ project Aes is
    for Main use ("aes.adb");
 
    package Builder is
-      for Default_Switches ("ada") use ("-g", "-O0");
+      for Default_Switches ("ada") use ("-g");
    end Builder;
 
    package Compiler is
-   for Default_Switches ("ada") use
-     (
-      "-gnatwa",
-      "-gnatqQafoy"
-     );
+      Switches := ("-gnatwa");
+      case Opt is
+         when "debug" =>
+            Switches := Switches & ("-gnatqQafoy", "-O0");
+         when "performance" =>
+            Switches := Switches & ("-gnatqQfy", "-O2", "-gnatp");
+      end case;
+      for Default_Switches ("ada") use Switches;
    end Compiler;
 
    package Binder is
