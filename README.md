@@ -29,12 +29,10 @@ The Ada source is licensed under the
 
 The Ada emulator is written using [Ada2012][], and uses the
 [GNU Multiple Precision Arithmetic library][], via the
-[GMP binding in GNATCOLL][] (note, the actual binding used was that in
-AdaCore's GPL 2015 version, for reasons).
+[GMP binding in GNATCOLL][].
 
 If you have the [FSF GCC 6.1.0 binary for OS X][] a suitable library
-is provided. GMP and GNATCOLL (at least the 2015 version) are
-reasonably straightforward to build.
+is provided. GMP and GNATCOLL are reasonably straightforward to build.
 
 [Ada2012]: http://www.ada-auth.org/standards/rm12_w_tc1/html/RM-TOC.html
 
@@ -110,7 +108,8 @@ input at operation 21).
 
 ## Performance
 
-The [Deep Learning with the Analytical Engine][] project, with the [Deep Learning with the Analytical Engine repository][], reports on an
+The [Deep Learning with the Analytical Engine][] project, with the
+[Deep Learning with the Analytical Engine repository][], reports on an
 
 > implementation of a convolutional neural network as a program for
 > Charles Babbage's Analytical Engine, capable of recognising
