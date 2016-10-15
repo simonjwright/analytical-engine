@@ -23,9 +23,24 @@ with Ada.Strings.Fixed;
 
 package body Analytical_Engine.Store is
 
+   Zero : constant Big_Integer := Make ("0");
+
+   Overwrite_Nonzero_Allowed : Boolean := False;
+
+   procedure Allow_Overwrite_Nonzero (Allow : Boolean)
+   is
+   begin
+      Overwrite_Nonzero_Allowed := Allow;
+   end Allow_Overwrite_Nonzero;
+
    procedure Set (This : in out Instance; Col : Column; To : Big_Integer)
    is
    begin
+      if not Overwrite_Nonzero_Allowed
+        and then This.Columns (Col) /= Zero
+      then
+         raise Store_Error with "storing on non-zero column";
+      end if;
       if This.Panel.Tracing then
          This.Panel.Log_Trace_Message
            ("Store: "
@@ -36,7 +51,10 @@ package body Analytical_Engine.Store is
       Set (This.Columns (Col), To => To);
    end Set;
 
-   procedure Get (This : Instance; Col : Column; Result : out Big_Integer)
+   procedure Get (This : in out Instance;
+                  Col : Column;
+                  Result : out Big_Integer;
+                  Preserve : Boolean)
    is
    begin
       if This.Panel.Tracing then
@@ -45,9 +63,12 @@ package body Analytical_Engine.Store is
               & Ada.Strings.Fixed.Trim (Col'Img, Ada.Strings.Both)
               & "("
               & Image (This.Columns (Col))
-              & ") => Mill");
+              & ") => Mill" & (if Preserve then "" else ", zeroed"));
       end if;
       Set (Result, To => This.Columns (Col));
+      if not Preserve then
+         Set (This.Columns (Col), To => Zero);
+      end if;
    end Get;
 
 end Analytical_Engine.Store;

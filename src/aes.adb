@@ -29,6 +29,7 @@ with Analytical_Engine.Card;
 with Analytical_Engine.Card_Reader;
 with Analytical_Engine.Framework;
 with Analytical_Engine.Output.Printer;
+with Analytical_Engine.Store;
 
 use Analytical_Engine;
 
@@ -36,6 +37,7 @@ procedure Aes is
 
    Command_Line_Config : GNAT.Command_Line.Command_Line_Configuration;
    Tracing : aliased Boolean := False;
+   Allow_Overwrite_Nonzero : aliased Boolean := False;
 
    Panel : constant Annunciator_Panel.Class_P
      := new Annunciator_Panel.Command_Line.Instance;
@@ -56,9 +58,17 @@ begin
       "-t",
       Long_Switch => "--trace",
       Help => "Trace execution (like card T1)");
+   GNAT.Command_Line.Define_Switch
+     (Command_Line_Config,
+      Allow_Overwrite_Nonzero'Access,
+      "-z",
+      Long_Switch => "--overwrite-nonzero",
+      Help => "Allow storing to a non-zero column");
+
    GNAT.Command_Line.Getopt (Command_Line_Config);
 
    Panel.Set_Tracing (Tracing);
+   Store.Allow_Overwrite_Nonzero (Allow_Overwrite_Nonzero);
 
    declare
       Chain_File_Name : constant String := GNAT.Command_Line.Get_Argument;

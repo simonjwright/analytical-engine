@@ -74,6 +74,8 @@ package Analytical_Engine.Card is
 
    function Read (From : String) return Card'Class;
 
+   function Image (C : Card) return String;
+
 private
 
    use Ada.Strings.Unbounded;

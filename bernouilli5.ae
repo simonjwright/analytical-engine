@@ -41,13 +41,13 @@ s006
 
  operation 2
 -
-l004
+z004
 l001
 s004
 
  operation 3
 +
-l005
+z005
 l001
 s005
 
@@ -60,13 +60,13 @@ s011'
 
  operation 5
 /
-l011
+z011
 l002
 s011'
 
  operation 6
 -
-l013
+z013
 z011
 s013
 
@@ -98,25 +98,25 @@ s012
  operation 11
 +
 z012
-l013
+z013
 s013
 
  operation 12
 -
-l010
+z010
 l001
 s010
  --------------------
  operation 13
 -
-l006
+z006
 l001
 s006
 
  operation 14
 +
 l001
-l007
+z007
 s007
 
  operation 15
@@ -129,20 +129,20 @@ s008'
  operation 16
 *
 z008
-l011
+z011
 >10
 s011
 
  operation 17
 -
-l006
+z006
 l001
 s006
 
  operation 18
 +
 l001
-l007
+z007
 s007
 
  operation 19
@@ -155,7 +155,7 @@ s009'
  operation 20
 *
 z009
-l011
+z011
 >10
 s011
 
@@ -169,25 +169,25 @@ s012
  operation 22
 +
 z012
-l013
+z013
 s013
 
  operation 23
 -
-l010
+z010
 l001
 s010
  .................... first repeat starts here
  operation 13
 -
-l006
+z006
 l001
 s006
 
  operation 14
 +
 l001
-l007
+z007
 s007
 
  operation 15
@@ -200,20 +200,20 @@ s008'
  operation 16
 *
 z008
-l011
+z011
 >10
 s011
 
  operation 17
 -
-l006
+z006
 l001
 s006
 
  operation 18
 +
 l001
-l007
+z007
 s007
 
  operation 19
@@ -226,7 +226,7 @@ s009'
  operation 20
 *
 z009
-l011
+z011
 >10
 s011
 
@@ -240,25 +240,25 @@ s012
  operation 22
 +
 z012
-l013
+z013
 s013
 
  operation 23
 -
-l010
+z010
 l001
 s010
  .................... second repeat starts here
  operation 13
 -
-l006
+z006
 l001
 s006
 
  operation 14
 +
 l001
-l007
+z007
 s007
 
  operation 15
@@ -271,20 +271,20 @@ s008'
  operation 16
 *
 z008
-l011
+z011
 >10
 s011
 
  operation 17
 -
-l006
+z006
 l001
 s006
 
  operation 18
 +
 l001
-l007
+z007
 s007
 
  operation 19
@@ -297,7 +297,7 @@ s009'
  operation 20
 *
 z009
-l011
+z011
 >10
 s011
 
@@ -311,18 +311,18 @@ s012
  operation 22
 +
 z012
-l013
+z013
 s013
 
  operation 23
 -
-l010
+z010
 l001
 s010
  --------------------
  operation 24, with bug fixed
 -
-l025
+z025
 l013
 s025
  the result!!
@@ -331,8 +331,8 @@ p
  operation 25
 +
 l001
-l003
+z003
 s003
  -- and clear V6, V7 - why?
-n006 0
-n007 0
+ n006 0
+ n007 0

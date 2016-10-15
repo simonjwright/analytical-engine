@@ -10,7 +10,7 @@
  A bug in operation 4 has been fixed (the comment requires V4/V5,
  AAL's code does V5/V4).
 
- Another bug is at operation 24: the value accumulated in V13 is *the
+ Another bug was at operation 24: the value accumulated in V13 is *the
  negative* of the required value, see Note G Equation 9.
 
  useful constants
@@ -38,13 +38,13 @@ s006
 
  operation 2
 -
-l004
+z004
 l001
 s004
 
  operation 3
 +
-l005
+z005
 l001
 s005
 
@@ -57,13 +57,13 @@ s011'
 
  operation 5
 /
-l011
+z011
 l002
 s011'
 
  operation 6
 -
-l013
+z013
 z011
 s013
 
@@ -85,7 +85,7 @@ l006
 l007
 s011'
 
- operation 10
+ operation 10, using b1 (v021)
 *
 l021
 l011
@@ -95,25 +95,25 @@ s012
  operation 11
 +
 z012
-l013
+z013
 s013
 
  operation 12
 -
-l010
+z010
 l001
 s010
  --------------------
  operation 13
 -
-l006
+z006
 l001
 s006
 
  operation 14
 +
 l001
-l007
+z007
 s007
 
  operation 15
@@ -126,20 +126,20 @@ s008'
  operation 16
 *
 z008
-l011
+z011
 >10
 s011
 
  operation 17
 -
-l006
+z006
 l001
 s006
 
  operation 18
 +
 l001
-l007
+z007
 s007
 
  operation 19
@@ -152,11 +152,11 @@ s009'
  operation 20
 *
 z009
-l011
+z011
 >10
 s011
 
- operation 21
+ operation 21, using b3 (v022)
 *
 l022
 l011
@@ -166,25 +166,25 @@ s012
  operation 22
 +
 z012
-l013
+z013
 s013
 
  operation 23
 -
-l010
+z010
 l001
 s010
  .................... repeat starts here
  operation 13
 -
-l006
+z006
 l001
 s006
 
  operation 14
 +
 l001
-l007
+z007
 s007
 
  operation 15
@@ -197,20 +197,20 @@ s008'
  operation 16
 *
 z008
-l011
+z011
 >10
 s011
 
  operation 17
 -
-l006
+z006
 l001
 s006
 
  operation 18
 +
 l001
-l007
+z007
 s007
 
  operation 19
@@ -223,11 +223,11 @@ s009'
  operation 20
 *
 z009
-l011
+z011
 >10
 s011
 
- operation 21 (NB using v023 this time)
+ operation 21 (NB using b5, v023 this time)
 *
 l023
 l011
@@ -237,12 +237,12 @@ s012
  operation 22
 +
 z012
-l013
+z013
 s013
 
  operation 23
 -
-l010
+z010
 l001
 s010
  --------------------
@@ -257,8 +257,8 @@ p
  operation 25
 +
 l001
-l003
+z003
 s003
- -- and clear V6, V7
-n006 0
-n007 0
+ -- and clear V6, V7 (should have been done earlier, operation 19)
+ n006 0
+ n007 0

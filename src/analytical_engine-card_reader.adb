@@ -107,7 +107,7 @@ package body Analytical_Engine.Card_Reader is
    begin
       This.Index := 1;
       This.Halted := False;
-      loop
+      Execution : loop
          declare
             C : constant Card.Card'Class := This.Chain (This.Index);
          begin
@@ -115,20 +115,25 @@ package body Analytical_Engine.Card_Reader is
                In_The_Framework.Panel.Log_Trace_Message
                  ("Card"
                     & This.Index'Img
-                    & " ("
-                    & Ada.Strings.Unbounded.To_String (C.Source_File)
-                    & ":"
-                    & Ada.Strings.Fixed.Trim (C.Line_Number'Img,
-                                              Ada.Strings.Both)
-                    & ") "
-                    & Ada.Strings.Unbounded.To_String (C.Source));
+                    & " "
+                    & C.Image);
             end if;
             This.Index := This.Index + 1;
             C.Execute (In_The_Framework);
+         exception
+            when E : others =>
+               In_The_Framework.Panel.Log_Trace_Message
+                 ("Error at card"
+                    & Integer'Image (This.Index - 1)
+                    & " "
+                    & C.Image
+                    & " "
+                    & Ada.Exceptions.Exception_Message (E));
+               exit Execution;
          end;
-         exit when This.Halted
+         exit Execution when This.Halted
            or else This.Index > Integer (This.Chain.Length);
-      end loop;
+      end loop Execution;
       This.Halted := True;
    end Execute;
 

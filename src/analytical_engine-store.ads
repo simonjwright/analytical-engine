@@ -33,9 +33,16 @@ package Analytical_Engine.Store is
    is tagged limited private;
    type Instance_P is access all Instance;
 
+   procedure Allow_Overwrite_Nonzero (Allow : Boolean);
+
    procedure Set (This : in out Instance; Col : Column; To : Big_Integer);
 
-   procedure Get (This : Instance; Col : Column; Result : out Big_Integer);
+   procedure Get (This : in out Instance;
+                  Col : Column;
+                  Result : out Big_Integer;
+                  Preserve : Boolean);
+
+   Store_Error : exception;
 
 private
 

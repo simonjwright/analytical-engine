@@ -28,8 +28,6 @@ with Analytical_Engine.Framework;
 
 package body Analytical_Engine.Card is
 
-   Zero : constant Big_Integer := Make ("0");
-
    --  Note, these values are actually 1 more (less) than the maximum
    --  (minimum) possible value that can be held on a column.
    Max_Value : constant Big_Integer
@@ -293,16 +291,14 @@ package body Analytical_Engine.Card is
    begin
       case C.Axis is
          when Mill.Ingress =>
-            In_The_Framework.Store.Get (Col => C.Column, Result => Value);
-            if not C.Preserve then
-               In_The_Framework.Store.Set (Col => C.Column, To => Zero);
-            end if;
+            In_The_Framework.Store.Get (Col => C.Column,
+                                        Result => Value,
+                                        Preserve => C.Preserve);
             In_The_Framework.Mill.Set_Ingress (Value);
          when Mill.Ingress_Primed =>
-            In_The_Framework.Store.Get (Col => C.Column, Result => Value);
-            if not C.Preserve then
-               In_The_Framework.Store.Set (Col => C.Column, To => Zero);
-            end if;
+            In_The_Framework.Store.Get (Col => C.Column,
+                                        Result => Value,
+                                        Preserve => C.Preserve);
             In_The_Framework.Mill.Set_Ingress_Primed (Value);
          when Mill.Egress =>
             In_The_Framework.Mill.Get_Egress (Value);
@@ -362,5 +358,17 @@ package body Analytical_Engine.Card is
    begin
       In_The_Framework.Panel.Set_Tracing (To => C.Tracing);
    end Execute;
+
+   function Image (C : Card) return String
+   is
+   begin
+      return
+        "("
+        & Ada.Strings.Unbounded.To_String (C.Source_File)
+        & ":"
+        & Ada.Strings.Fixed.Trim (C.Line_Number'Img, Ada.Strings.Both)
+        & ") "
+        & Ada.Strings.Unbounded.To_String (C.Source);
+   end Image;
 
 end Analytical_Engine.Card;
