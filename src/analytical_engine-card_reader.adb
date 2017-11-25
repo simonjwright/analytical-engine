@@ -19,13 +19,19 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
+with Ada.Characters.Conversions;
 with Ada.Exceptions;
 with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;
-with Ada.Text_IO;
+with Ada.Strings.Wide_Unbounded;
+with Ada.Wide_Text_IO;
 with Analytical_Engine.Framework;
 
 package body Analytical_Engine.Card_Reader is
+
+   function "+" (Item : String) return Wide_String
+     renames Ada.Characters.Conversions.To_Wide_String;
+   function "+" (Item : Wide_String) return String
+   is (Ada.Characters.Conversions.To_String (Item, Substitute => ' '));
 
    procedure Reset (This : out Instance)
    is
@@ -36,16 +42,17 @@ package body Analytical_Engine.Card_Reader is
 
    procedure Add_Cards (This : in out Instance; From_File_Named : String)
    is
-      procedure Add (From : Ada.Text_IO.File_Type; Named : String);
-      procedure Add (From : Ada.Text_IO.File_Type; Named : String)
+      procedure Add (From : Ada.Wide_Text_IO.File_Type; Named : String);
+      procedure Add (From : Ada.Wide_Text_IO.File_Type; Named : String)
       is
-         use Ada.Strings.Unbounded;
+         use Ada.Strings.Wide_Unbounded;
          Line_Number : Positive := 1;
-         Source : constant Unbounded_String := To_Unbounded_String (Named);
+         Source : constant Unbounded_Wide_String
+           := To_Unbounded_Wide_String (+Named);
       begin
          loop
             declare
-               Line : constant String := Ada.Text_IO.Get_Line (From);
+               Line : constant Wide_String := Ada.Wide_Text_IO.Get_Line (From);
             begin
                declare
                   C : Card.Card'Class := Card.Read (Line);
@@ -58,13 +65,13 @@ package body Analytical_Engine.Card_Reader is
                when E : Card.Card_Error =>
                   raise Card.Card_Error
                     with Ada.Exceptions.Exception_Message (E)
-                    & " at "
-                    & Named
-                    & ":"
-                    & Ada.Strings.Fixed.Trim (Line_Number'Img,
-                                              Ada.Strings.Both)
-                    & " "
-                    & Line;
+                      & " at "
+                      & Named
+                      & ":"
+                      & Ada.Strings.Fixed.Trim (Line_Number'Img,
+                                                Ada.Strings.Both)
+                      & " "
+                      & (+Line);
                when others =>
                   raise Card.Card_Error
                     with "error reading card at "
@@ -73,7 +80,7 @@ package body Analytical_Engine.Card_Reader is
                     & Ada.Strings.Fixed.Trim (Line_Number'Img,
                                               Ada.Strings.Both)
                     & " "
-                    & Line;
+                    & (+Line);
             end;
             Line_Number := Line_Number + 1;
          end loop;
@@ -81,22 +88,23 @@ package body Analytical_Engine.Card_Reader is
    begin
       if From_File_Named'Length = 0 then
          begin
-            Add (Ada.Text_IO.Standard_Input, "<stdin>");
+            Add (Ada.Wide_Text_IO.Standard_Input, "<stdin>");
          exception
-            when Ada.Text_IO.End_Error => null;
+            when Ada.Wide_Text_IO.End_Error => null;
          end;
       else
          declare
-            F : Ada.Text_IO.File_Type;
+            F : Ada.Wide_Text_IO.File_Type;
          begin
-            Ada.Text_IO.Open (F,
-                              Name => From_File_Named,
-                              Mode => Ada.Text_IO.In_File);
+            Ada.Wide_Text_IO.Open (F,
+                                   Name => From_File_Named,
+                                   Mode => Ada.Wide_Text_IO.In_File,
+                                   Form => "wcem=8");
             Add (F, From_File_Named);
-            Ada.Text_IO.Close (F);
+            Ada.Wide_Text_IO.Close (F);
          exception
-            when Ada.Text_IO.End_Error =>
-               Ada.Text_IO.Close (F);
+            when Ada.Wide_Text_IO.End_Error =>
+               Ada.Wide_Text_IO.Close (F);
          end;
       end if;
    end Add_Cards;
@@ -113,22 +121,22 @@ package body Analytical_Engine.Card_Reader is
          begin
             if In_The_Framework.Panel.Tracing then
                In_The_Framework.Panel.Log_Trace_Message
-                 ("Card"
-                    & This.Index'Img
-                    & " "
-                    & C.Image);
+                 (+("Card"
+                      & This.Index'Img
+                      & " "
+                      & C.Image));
             end if;
             This.Index := This.Index + 1;
             C.Execute (In_The_Framework);
          exception
             when E : others =>
                In_The_Framework.Panel.Log_Trace_Message
-                 ("Error at card"
-                    & Integer'Image (This.Index - 1)
-                    & " "
-                    & C.Image
-                    & " "
-                    & Ada.Exceptions.Exception_Message (E));
+                 (+("Error at card"
+                      & Integer'Image (This.Index - 1)
+                      & " "
+                      & C.Image
+                      & " "
+                      & Ada.Exceptions.Exception_Message (E)));
                exit Execution;
          end;
          exit Execution when This.Halted

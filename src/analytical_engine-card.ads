@@ -19,12 +19,13 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Ada.Strings.Unbounded;
+with Ada.Strings.Wide_Unbounded;
 
 limited with Analytical_Engine.Framework;
 
+private with Ada.Characters.Conversions;
 private with Ada.Finalization;
-private with Ada.Strings.Maps;
+private with Ada.Strings.Wide_Maps;
 private with Analytical_Engine.Mill;
 private with Analytical_Engine.Store;
 private with GNATCOLL.GMP.Integers;
@@ -59,8 +60,8 @@ package Analytical_Engine.Card is
 
    type Card is abstract tagged record
       Line_Number : Natural := 0;
-      Source_File : Ada.Strings.Unbounded.Unbounded_String;
-      Source      : Ada.Strings.Unbounded.Unbounded_String;
+      Source_File : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
+      Source      : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
    end record;
    type Card_P is access all Card'Class;
 
@@ -72,22 +73,25 @@ package Analytical_Engine.Card is
 
    Card_Error : exception;
 
-   function Read (From : String) return Card'Class;
+   function Read (From : Wide_String) return Card'Class;
 
    function Image (C : Card) return String;
 
 private
 
-   use Ada.Strings.Unbounded;
+   use Ada.Strings.Wide_Unbounded;
    use GNATCOLL.GMP.Integers;
 
    function Equals (L, R : Card'Class) return Boolean is
      (System."=" (L'Address, R'Address));
 
-   White_Space : constant Ada.Strings.Maps.Character_Set
-     := Ada.Strings.Maps.To_Set (" " & ASCII.HT);
-   White_Space_Or_Plus : constant Ada.Strings.Maps.Character_Set
-     := Ada.Strings.Maps.To_Set (" +" & ASCII.HT);
+   function "+" (Item : String) return Wide_String
+     renames Ada.Characters.Conversions.To_Wide_String;
+
+   White_Space : constant Ada.Strings.Wide_Maps.Wide_Character_Set
+     := Ada.Strings.Wide_Maps.To_Set (+(" " & ASCII.HT));
+   White_Space_Or_Plus : constant Ada.Strings.Wide_Maps.Wide_Character_Set
+     := Ada.Strings.Wide_Maps.To_Set (+(" +" & ASCII.HT));
 
    type Big_Integer_P is access Big_Integer; -- Big_Integer is limited
    type Controlled_Big_Integer is new Ada.Finalization.Controlled with record
@@ -146,7 +150,7 @@ private
    type Action_Card (Act : Action_Kind) is new Card with record
       case Act is
          when Halt_Engine =>
-            Msg : Ada.Strings.Unbounded.Unbounded_String;
+            Msg : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
          when others =>
             null;
       end case;

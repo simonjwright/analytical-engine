@@ -97,8 +97,8 @@ These card types have not been implemented (yet):
 As a minor change, lower case can be used: `n001 42` is
 acceptable (it stores 42 into column 1).
 
-Multiplication and division can only be indicated by the `*`
-and `/` symbols (× and ÷ aren't supported).
+As in the [Fourmilab Java implementation][], multiplication can be
+indicated by `*` or `×`, division by `/` or `÷`.
 
 [Fourmilab Java implementation]: https://www.fourmilab.ch/babbage/cards.html
 

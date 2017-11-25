@@ -27,7 +27,7 @@ package Analytical_Engine.Output.Printer is
 
    overriding
    procedure Output
-     (To : Instance; S : String);
+     (To : Instance; S : Wide_String);
    overriding
    procedure Output
      (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer);

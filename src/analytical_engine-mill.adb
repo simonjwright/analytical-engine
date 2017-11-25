@@ -19,12 +19,17 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
+with Ada.Characters.Conversions;
+
 package body Analytical_Engine.Mill is
 
    Max_Value : constant Big_Integer
      := Make ("100000000000000000000000000000000000000000000000000");
    Min_Value : constant Big_Integer := -Max_Value;
    Zero : constant Big_Integer := Make ("0");
+
+   function "+" (Item : String) return Wide_String
+     renames Ada.Characters.Conversions.To_Wide_String;
 
    procedure Clear_Ingress (This : in out Instance'Class);
    procedure Clear_Egress (This : in out Instance'Class);
@@ -58,13 +63,13 @@ package body Analytical_Engine.Mill is
                end if;
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (This.Ingress)
-                       & " + "
-                       & Image (To)
-                       & " = "
-                       & Image (This.Egress)
-                       & (if This.Run_Up then ", run_up" else ""));
+                    (+("Mill: "
+                         & Image (This.Ingress)
+                         & " + "
+                         & Image (To)
+                         & " = "
+                         & Image (This.Egress)
+                         & (if This.Run_Up then ", run_up" else "")));
                end if;
             when Subtract =>
                Subtract (This.Egress, This.Ingress, To);
@@ -81,13 +86,13 @@ package body Analytical_Engine.Mill is
                end if;
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (This.Ingress)
-                       & " - "
-                       & Image (To)
-                       & " = "
-                       & Image (This.Egress)
-                       & (if This.Run_Up then ", run_up" else ""));
+                    (+("Mill: "
+                         & Image (This.Ingress)
+                         & " - "
+                         & Image (To)
+                         & " = "
+                         & Image (This.Egress)
+                         & (if This.Run_Up then ", run_up" else "")));
                end if;
             when Multiply =>
                Multiply (This.Egress, This.Ingress, To);
@@ -95,14 +100,14 @@ package body Analytical_Engine.Mill is
                Get_Rem (This.Egress, This.Egress, Max_Value);
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (This.Ingress)
-                       & " * "
-                       & Image (To)
-                       & " = "
-                       & Image (This.Egress_Primed)
-                       & ","
-                       & Image (This.Egress));
+                    (+("Mill: "
+                         & Image (This.Ingress)
+                         & " * "
+                         & Image (To)
+                         & " = "
+                         & Image (This.Egress_Primed)
+                         & ","
+                         & Image (This.Egress)));
                end if;
             when Divide =>
                if Sign (To) = 0 then
@@ -125,15 +130,15 @@ package body Analytical_Engine.Mill is
                end if;
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (This.Ingress)
-                       & " / "
-                       & Image (To)
-                       & " = "
-                       & Image (This.Egress_Primed)
-                       & ", rem "
-                       & Image (This.Egress)
-                       & (if This.Run_Up then ", run_up" else ""));
+                    (+("Mill: "
+                         & Image (This.Ingress)
+                         & " / "
+                         & Image (To)
+                         & " = "
+                         & Image (This.Egress_Primed)
+                         & ", rem "
+                         & Image (This.Egress)
+                         & (if This.Run_Up then ", run_up" else "")));
                end if;
          end case;
          Clear_Ingress (This);
@@ -188,13 +193,13 @@ package body Analytical_Engine.Mill is
                Get_Rem (This.Ingress, Tmp, Max_Value);
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (Tmp)
-                       & " <"
-                       & Amount'Img
-                       & " = "
-                       & Image (This.Ingress_Primed)
-                       & "," & Image (This.Ingress));
+                    (+("Mill: "
+                         & Image (Tmp)
+                         & " <"
+                         & Amount'Img
+                         & " = "
+                         & Image (This.Ingress_Primed)
+                         & "," & Image (This.Ingress)));
                end if;
             end;
          when Down =>
@@ -213,13 +218,13 @@ package body Analytical_Engine.Mill is
                Get_Rem (This.Egress, Result, Max_Value);
                if This.Panel.Tracing then
                   This.Panel.Log_Trace_Message
-                    ("Mill: "
-                       & Image (Input)
-                       & " >"
-                       & Amount'Img
-                       & " = "
-                       & Image (This.Egress_Primed)
-                       & "," & Image (This.Egress));
+                    (+("Mill: "
+                         & Image (Input)
+                         & " >"
+                         & Amount'Img
+                         & " = "
+                         & Image (This.Egress_Primed)
+                         & "," & Image (This.Egress)));
                end if;
             end;
       end case;

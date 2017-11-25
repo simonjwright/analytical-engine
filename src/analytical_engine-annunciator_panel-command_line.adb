@@ -19,17 +19,17 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Wide_Text_IO; use Ada.Wide_Text_IO;
 package body Analytical_Engine.Annunciator_Panel.Command_Line is
 
-   procedure Log_Attendant_Message (Panel : Instance; Msg : String)
+   procedure Log_Attendant_Message (Panel : Instance; Msg : Wide_String)
    is
       pragma Unreferenced (Panel);
    begin
       Put_Line (Msg);
    end Log_Attendant_Message;
 
-   procedure Log_Trace_Message (Panel : Instance; Msg : String)
+   procedure Log_Trace_Message (Panel : Instance; Msg : Wide_String)
    is
       pragma Unreferenced (Panel);
    begin

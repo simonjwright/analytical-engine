@@ -21,8 +21,9 @@
 
 package body Analytical_Engine.Output is
 
-   procedure Set_Picture (This : in out Instance;
-                          To : Ada.Strings.Unbounded.Unbounded_String)
+   procedure Set_Picture
+     (This : in out Instance;
+      To : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String)
    is
    begin
       This.Picture := To;
@@ -31,7 +32,7 @@ package body Analytical_Engine.Output is
    procedure Clear_Picture (This : in out Instance)
    is
    begin
-      This.Picture := Ada.Strings.Unbounded.Null_Unbounded_String;
+      This.Picture := Ada.Strings.Wide_Unbounded.Null_Unbounded_Wide_String;
    end Clear_Picture;
 
    procedure Writing_Style (This : in out Instance; In_Rows : Boolean)

@@ -24,10 +24,10 @@ package Analytical_Engine.Annunciator_Panel.Command_Line is
    type Instance is new Annunciator_Panel.Instance with private;
 
    overriding
-   procedure Log_Attendant_Message (Panel : Instance; Msg : String);
+   procedure Log_Attendant_Message (Panel : Instance; Msg : Wide_String);
 
    overriding
-   procedure Log_Trace_Message (Panel : Instance; Msg : String);
+   procedure Log_Trace_Message (Panel : Instance; Msg : Wide_String);
 
 private
 

@@ -21,7 +21,7 @@
 
 with Analytical_Engine.Annunciator_Panel;
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
+with Ada.Strings.Wide_Unbounded;
 with GNATCOLL.GMP.Integers;
 
 package Analytical_Engine.Output is
@@ -31,12 +31,13 @@ package Analytical_Engine.Output is
    type Class_P is access all Instance'Class;
 
    procedure Output
-     (To : Instance; S : String) is abstract;
+     (To : Instance; S : Wide_String) is abstract;
    procedure Output
      (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer) is abstract;
 
-   procedure Set_Picture (This : in out Instance;
-                          To : Ada.Strings.Unbounded.Unbounded_String);
+   procedure Set_Picture
+     (This : in out Instance;
+      To : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String);
    procedure Clear_Picture (This : in out Instance);
 
    procedure Writing_Style (This : in out Instance; In_Rows : Boolean);
@@ -45,7 +46,7 @@ private
 
    type Instance (Panel : not null Annunciator_Panel.Class_P)
      is abstract new Ada.Finalization.Limited_Controlled with record
-        Picture : Ada.Strings.Unbounded.Unbounded_String;
+        Picture : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
         In_Rows : Boolean := True;
      end record;
 

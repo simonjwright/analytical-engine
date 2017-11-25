@@ -37,7 +37,7 @@ project Aes is
    end Builder;
 
    package Compiler is
-      Switches := ("-gnatwa");
+      Switches := ("-gnatwa", "-gnatW8");
       case Opt is
          when "debug" =>
             Switches := Switches & ("-gnatqQafoy", "-O0");

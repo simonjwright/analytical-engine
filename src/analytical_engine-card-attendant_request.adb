@@ -19,15 +19,11 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
---  with Ada.Strings.Unbounded;
---  private with Ada.Finalization;
---  private with Analytical_Engine.Mill;
---  private with Analytical_Engine.Store;
---  private with GNATCOLL.GMP.Integers;
---  private with System;
+with Ada.Characters.Conversions;
+with Ada.Strings.Wide_Unbounded;
 
---  with Ada.Strings.Fixed;
 with Analytical_Engine.Framework;
+
 with GNAT.Regpat;
 
 package body Analytical_Engine.Card.Attendant_Request is
@@ -50,44 +46,45 @@ package body Analytical_Engine.Card.Attendant_Request is
 
    Max_Parens : constant := 10; -- overkill
 
-   function Read (From : String) return Card'Class is
-      --  First : Positive;
-      --  Last : Natural;
+   function "+" (Item : Wide_String) return String
+     is (Ada.Characters.Conversions.To_String (Item, Substitute => ' '));
+
+   function Read (From : Wide_String) return Card'Class is
       Matches : GNAT.Regpat.Match_Array (0 .. Max_Parens);
       use type GNAT.Regpat.Match_Location;
    begin
-      GNAT.Regpat.Match (Picture_Matcher, From, Matches);
+      GNAT.Regpat.Match (Picture_Matcher, +From, Matches);
       if Matches (0) /= GNAT.Regpat.No_Match then
          return C : Picture_Card do
-            C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+            C.Source := To_Unbounded_Wide_String (From);
             C.Picture :=
-              Ada.Strings.Unbounded.To_Unbounded_String
+              To_Unbounded_Wide_String
                 (From (Matches (1).First .. Matches (1).Last));
          end return;
       end if;
 
-      GNAT.Regpat.Match (Row_Column_Matcher, From, Matches);
+      GNAT.Regpat.Match (Row_Column_Matcher, +From, Matches);
       if Matches (0) /= GNAT.Regpat.No_Match then
          return C : Row_Column_Card do
-            C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+            C.Source := To_Unbounded_Wide_String (From);
             C.In_Rows := From (Matches (1).First .. Matches (1).Last) = "rows";
          end return;
       end if;
 
-      GNAT.Regpat.Match (Annotation_Matcher, From, Matches);
+      GNAT.Regpat.Match (Annotation_Matcher, +From, Matches);
       if Matches (0) /= GNAT.Regpat.No_Match then
          return C : Annotation_Card do
-            C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+            C.Source := To_Unbounded_Wide_String (From);
             C.Annotation :=
-              Ada.Strings.Unbounded.To_Unbounded_String
+              To_Unbounded_Wide_String
                 (From (Matches (1).First .. Matches (1).Last));
          end return;
       end if;
 
-      GNAT.Regpat.Match (New_Line_Matcher, From, Matches);
+      GNAT.Regpat.Match (New_Line_Matcher, +From, Matches);
       if Matches (0) /= GNAT.Regpat.No_Match then
          return C : New_Line_Card do
-            C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+            C.Source := To_Unbounded_Wide_String (From);
          end return;
       end if;
       raise Card_Error
@@ -119,14 +116,15 @@ package body Analytical_Engine.Card.Attendant_Request is
    procedure Execute (C : Annotation_Card;
                       In_The_Framework : in out Framework.Instance) is
    begin
-      In_The_Framework.Output.Output (To_String (C.Annotation));
+      In_The_Framework.Output.Output (To_Wide_String (C.Annotation));
    end Execute;
 
    procedure Execute (C : New_Line_Card;
                       In_The_Framework : in out Framework.Instance) is
       pragma Unreferenced (C);
+      use Ada.Characters.Conversions;
    begin
-      In_The_Framework.Output.Output ((1 => ASCII.LF));
+      In_The_Framework.Output.Output ((1 => To_Wide_Character (ASCII.LF)));
    end Execute;
 
    --     Not_A_Request);

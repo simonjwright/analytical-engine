@@ -10,8 +10,8 @@
  A bug in operation 4 has been fixed (the comment requires V4/V5,
  AAL's code does V5/V4).
 
- Another bug was at operation 24: the value accumulated in V13 is *the
- negative* of the required value, see Note G Equation 9.
+ Another bug was at operation 24: the value accumulated in V13 is ×the
+ negative× of the required value, see Note G Equation 9.
 
  useful constants
 n001 1
@@ -29,7 +29,7 @@ n022   -00333333333
 n023    00238095238
 
  operation 1
-*
+×
 l002
 l003
 s004
@@ -49,14 +49,14 @@ l001
 s005
 
  operation 4, with bug fixed
-/
+÷
 z004
 <10
 z005
 s011'
 
  operation 5
-/
+÷
 z011
 l002
 s011'
@@ -79,14 +79,14 @@ l007
 s007
 
  operation 9
-/
+÷
 l006
 <10
 l007
 s011'
 
  operation 10, using b1 (v021)
-*
+×
 l021
 l011
 >10
@@ -117,14 +117,14 @@ z007
 s007
 
  operation 15
-/
+÷
 l006
 <10
 l007
 s008'
 
  operation 16
-*
+×
 z008
 z011
 >10
@@ -143,21 +143,21 @@ z007
 s007
 
  operation 19
-/
+÷
 l006
 <10
 l007
 s009'
 
  operation 20
-*
+×
 z009
 z011
 >10
 s011
 
  operation 21, using b3 (v022)
-*
+×
 l022
 l011
 >10
@@ -188,14 +188,14 @@ z007
 s007
 
  operation 15
-/
+÷
 l006
 <10
 l007
 s008'
 
  operation 16
-*
+×
 z008
 z011
 >10
@@ -214,21 +214,21 @@ z007
 s007
 
  operation 19
-/
+÷
 l006
 <10
 l007
 s009'
 
  operation 20
-*
+×
 z009
 z011
 >10
 s011
 
  operation 21 (NB using b5, v023 this time)
-*
+×
 l023
 l011
 >10
@@ -251,7 +251,8 @@ s010
 l024
 l013
 s024
- the result!!
+ the result!! calculations were scaled by 10 places
+a write numbers as 9.9999999999
 p
 
  operation 25

@@ -19,13 +19,16 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Characters.Conversions;
+with Ada.Wide_Text_IO; use Ada.Wide_Text_IO;
+
 package body Analytical_Engine.Output.Printer is
 
-   procedure Output (To : Instance; S : String)
+   procedure Output (To : Instance; S : Wide_String)
    is
    begin
-      if S = (1 => ASCII.LF) then
+      if S = (1 => Ada.Characters.Conversions.To_Wide_Character (ASCII.LF))
+      then
          New_Line;
       else
          Put (S);
@@ -38,20 +41,23 @@ package body Analytical_Engine.Output.Printer is
    procedure Output
      (To : Instance; I : GNATCOLL.GMP.Integers.Big_Integer)
    is
-      Picture : constant String
-        := Ada.Strings.Unbounded.To_String (To.Picture);
+      function "+" (Item : String) return Wide_String
+        renames Ada.Characters.Conversions.To_Wide_String;
+      Picture : constant Wide_String
+        := Ada.Strings.Wide_Unbounded.To_Wide_String (To.Picture);
    begin
       if Picture'Length = 0 then
-         To.Output (GNATCOLL.GMP.Integers.Image (I));
+         To.Output (+GNATCOLL.GMP.Integers.Image (I));
       else
          declare
             use type GNATCOLL.GMP.Integers.Big_Integer;
             Negative : constant Boolean := I < 0;
-            Image : constant String := GNATCOLL.GMP.Integers.Image (abs I);
+            Image : constant Wide_String :=
+              +GNATCOLL.GMP.Integers.Image (abs I);
             Index : Natural := Image'Length;
             Sign_Output : Boolean := False;
-            Result : Ada.Strings.Unbounded.Unbounded_String;
-            use type Ada.Strings.Unbounded.Unbounded_String;
+            Result : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
+            use type Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
          begin
             for C of reverse Picture loop
                case C is
@@ -99,7 +105,7 @@ package body Analytical_Engine.Output.Printer is
             if Negative and not Sign_Output then
                Result := '-' & Result;
             end if;
-            To.Output (Ada.Strings.Unbounded.To_String (Result));
+            To.Output (Ada.Strings.Wide_Unbounded.To_Wide_String (Result));
          end;
       end if;
    end Output;

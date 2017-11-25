@@ -33,7 +33,7 @@ private package Analytical_Engine.Card.Attendant_Request is
 
    type Card is abstract new Analytical_Engine.Card.Card with private;
 
-   function Read (From : String) return Card'Class
+   function Read (From : Wide_String) return Card'Class
    with Pre => From'Length > 0
                and then (From (From'First) = 'A'
                            or else From (From'First) = 'a');
@@ -51,7 +51,7 @@ private
    --     Decimal_Place_Expansion,
 
    type Picture_Card is new Card with record
-      Picture : Ada.Strings.Unbounded.Unbounded_String;
+      Picture : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
    end record;
    overriding
    procedure Execute (C : Picture_Card;
@@ -67,7 +67,7 @@ private
                       In_The_Framework : in out Framework.Instance);
 
    type Annotation_Card is new Card with record
-      Annotation : Ada.Strings.Unbounded.Unbounded_String;
+      Annotation : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
    end record;
    overriding
    procedure Execute (C : Annotation_Card;

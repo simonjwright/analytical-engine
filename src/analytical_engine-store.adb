@@ -19,6 +19,7 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
+with Ada.Characters.Conversions;
 with Ada.Strings.Fixed;
 
 package body Analytical_Engine.Store is
@@ -33,6 +34,9 @@ package body Analytical_Engine.Store is
       Overwrite_Nonzero_Allowed := Allow;
    end Allow_Overwrite_Nonzero;
 
+   function "+" (Item : String) return Wide_String
+     renames Ada.Characters.Conversions.To_Wide_String;
+
    procedure Set (This : in out Instance; Col : Column; To : Big_Integer)
    is
    begin
@@ -43,10 +47,10 @@ package body Analytical_Engine.Store is
       end if;
       if This.Panel.Tracing then
          This.Panel.Log_Trace_Message
-           ("Store: "
-              & Image (To)
-              & " => V"
-              & Ada.Strings.Fixed.Trim (Col'Img, Ada.Strings.Both));
+           (+("Store: "
+                & Image (To)
+                & " => V"
+                & Ada.Strings.Fixed.Trim (Col'Img, Ada.Strings.Both)));
       end if;
       Set (This.Columns (Col), To => To);
    end Set;
@@ -59,11 +63,11 @@ package body Analytical_Engine.Store is
    begin
       if This.Panel.Tracing then
          This.Panel.Log_Trace_Message
-           ("Store: V"
-              & Ada.Strings.Fixed.Trim (Col'Img, Ada.Strings.Both)
-              & "("
-              & Image (This.Columns (Col))
-              & ") => Mill" & (if Preserve then "" else ", zeroed"));
+           (+("Store: V"
+                & Ada.Strings.Fixed.Trim (Col'Img, Ada.Strings.Both)
+                & "("
+                & Image (This.Columns (Col))
+                & ") => Mill" & (if Preserve then "" else ", zeroed")));
       end if;
       Set (Result, To => This.Columns (Col));
       if not Preserve then

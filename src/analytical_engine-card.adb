@@ -19,8 +19,9 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-with Ada.Characters.Handling;
+with Ada.Wide_Characters.Handling;
 with Ada.Strings.Fixed;
+with Ada.Strings.Wide_Fixed;
 with Ada.Unchecked_Deallocation;
 
 with Analytical_Engine.Card.Attendant_Request;
@@ -34,50 +35,54 @@ package body Analytical_Engine.Card is
      := Make ("100000000000000000000000000000000000000000000000000");
    Min_Value : constant Big_Integer := -Max_Value;
 
-   function Read (From : String) return Card'Class
+   function "+" (Item : Wide_String) return String
+     is (Ada.Characters.Conversions.To_String (Item, Substitute => ' '));
+
+   function Read (From : Wide_String) return Card'Class
    is
       Start : Positive := From'First;
-      Leading : Character;
+      Leading : Wide_Character;
    begin
       if From'Length = 0 or else From (Start) in ' ' | '.' then
          return C : Comment_Card do
-            C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+            C.Source := To_Unbounded_Wide_String (From);
          end return;
       end if;
-      Leading := Ada.Characters.Handling.To_Upper (From (Start));
+      Leading := Ada.Wide_Characters.Handling.To_Upper (From (Start));
       Start := Start + 1;
       case Leading is
          when 'N' =>
             return C : Number_Card do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                declare
                   First : Positive;
                   Last : Natural;
                begin
-                  Ada.Strings.Fixed.Find_Token
+                  Ada.Strings.Wide_Fixed.Find_Token
                     (Source => From,
-                     Set => White_Space,
-                     From => Start,
-                     Test => Ada.Strings.Outside,
-                     First => First,
-                     Last => Last);
+                     Set    => White_Space,
+                     From   => Start,
+                     Test   => Ada.Strings.Outside,
+                     First  => First,
+                     Last   => Last);
                   if Last = 0 then
                      raise Card_Error with "invalid number card";
                   end if;
-                  C.Target_Column := Store.Column'Value (From (First .. Last));
+                  C.Target_Column :=
+                    Store.Column'Value (+(From (First .. Last)));
                   Start := Last + 1;
-                  Ada.Strings.Fixed.Find_Token
+                  Ada.Strings.Wide_Fixed.Find_Token
                     (Source => From,
-                     Set => White_Space_Or_Plus,  -- GNATCOLL issue 1
-                     From => Start,
-                     Test => Ada.Strings.Outside,
-                     First => First,
-                     Last => Last);
+                     Set    => White_Space_Or_Plus, -- GNATCOLL issue 1
+                     From   => Start,
+                     Test   => Ada.Strings.Outside,
+                     First  => First,
+                     Last   => Last);
                   if Last = 0 then
                      raise Card_Error with "invalid number card";
                   end if;
                   C.Value.Number :=
-                    new Big_Integer'(Make (From (First .. Last)));
+                    new Big_Integer'(Make (+(From (First .. Last))));
                   if C.Value.Number.all > Max_Value
                     or C.Value.Number.all < Min_Value
                   then
@@ -87,19 +92,19 @@ package body Analytical_Engine.Card is
             end return;
          when 'L' | 'Z' | 'S' =>
             return C : Variable_Card do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                declare
                   First : Positive;
                   Last : Natural;
                   Primed : Boolean;
                begin
-                  Ada.Strings.Fixed.Find_Token
+                  Ada.Strings.Wide_Fixed.Find_Token
                     (Source => From,
-                     Set => White_Space,
-                     From => Start,
-                     Test => Ada.Strings.Outside,
-                     First => First,
-                     Last => Last);
+                     Set    => White_Space,
+                     From   => Start,
+                     Test   => Ada.Strings.Outside,
+                     First  => First,
+                     Last   => Last);
                   if Last = 0 then
                      raise Card_Error with "invalid variable card";
                   end if;
@@ -120,23 +125,24 @@ package body Analytical_Engine.Card is
                                    when 'L' | 'Z' => Mill.Ingress,
                                    when others    => raise Program_Error);
                   end if;
-                  C.Column := Store.Column'Value (From (First .. Last));
+                  C.Column :=
+                    Store.Column'Value (+(From (First .. Last)));
                   C.Preserve := Leading = 'L';   -- irrelevant for 'S'
                end;
             end return;
-         when '+' | '-' | '*' | '/' =>
+         when '+' | '-' | '*' | '×' | '/' | '÷' =>
             return C : Operation_Card do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                C.Op := (case Leading is
-                           when '+'    => Mill.Add,
-                           when '-'    => Mill.Subtract,
-                           when '*'    => Mill.Multiply,
-                           when '/'    => Mill.Divide,
-                           when others => raise Program_Error);
+                           when '+'       => Mill.Add,
+                           when '-'       => Mill.Subtract,
+                           when '*' | '×' => Mill.Multiply,
+                           when '/' | '÷' => Mill.Divide,
+                           when others    => raise Program_Error);
             end return;
          when '>' | '<' =>
             return C : Stepping_Card do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                C.Direction := (case Leading is
                                   when '>'    => Mill.Down,
                                   when '<'    => Mill.Up,
@@ -145,17 +151,18 @@ package body Analytical_Engine.Card is
                   First : Positive;
                   Last : Natural;
                begin
-                  Ada.Strings.Fixed.Find_Token
+                  Ada.Strings.Wide_Fixed.Find_Token
                     (Source => From,
-                     Set => White_Space,
-                     From => Start,
-                     Test => Ada.Strings.Outside,
-                     First => First,
-                     Last => Last);
+                     Set    => White_Space,
+                     From   => Start,
+                     Test   => Ada.Strings.Outside,
+                     First  => First,
+                     Last   => Last);
                   if Last = 0 then
                      raise Card_Error with "invalid step up/down card";
                   end if;
-                  C.Step_Count := Positive'Value (From (First .. Last));
+                  C.Step_Count :=
+                    Positive'Value (+((From (First .. Last))));
                   if C.Step_Count > 100 then
                      raise Card_Error with "invalid step up/down card";
                   end if;
@@ -163,11 +170,11 @@ package body Analytical_Engine.Card is
             end return;
          when 'C' =>
             return C : Combinatorial_Card do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                begin
                   declare
-                     Direction : constant Character
-                       := Ada.Characters.Handling.To_Upper (From (Start));
+                     Direction : constant Wide_Character
+                       := Ada.Wide_Characters.Handling.To_Upper (From (Start));
                   begin
                      if Direction = 'F' then
                         C.Advance := True;
@@ -193,7 +200,7 @@ package body Analytical_Engine.Card is
                      First : Positive;
                      Last : Natural;
                   begin
-                     Ada.Strings.Fixed.Find_Token
+                     Ada.Strings.Wide_Fixed.Find_Token
                        (Source => From,
                         Set    => White_Space,
                         From   => Start,
@@ -203,7 +210,8 @@ package body Analytical_Engine.Card is
                      if Last = 0 then
                         raise Card_Error with "invalid combinatorial card";
                      end if;
-                     C.Card_Count := Positive'Value (From (First .. Last));
+                     C.Card_Count :=
+                       Positive'Value (+(From (First .. Last)));
                   end;
                exception
                   when Constraint_Error =>
@@ -217,11 +225,11 @@ package body Analytical_Engine.Card is
                           when 'P'    => Print_Last_Result,
                           when 'H'    => Halt_Engine,
                           when others => raise Program_Error)) do
-               C.Source := Ada.Strings.Unbounded.To_Unbounded_String (From);
+               C.Source := To_Unbounded_Wide_String (From);
                case Leading is
                   when 'H' =>
-                     C.Msg := To_Unbounded_String
-                       (Ada.Strings.Fixed.Trim
+                     C.Msg := To_Unbounded_Wide_String
+                       (Ada.Strings.Wide_Fixed.Trim
                           (From (From'First + 1 .. From'Last),
                         Ada.Strings.Both));
                   when others => null;
@@ -233,17 +241,18 @@ package body Analytical_Engine.Card is
                   First : Positive;
                   Last : Natural;
                begin
-                  Ada.Strings.Fixed.Find_Token
+                  Ada.Strings.Wide_Fixed.Find_Token
                     (Source => From,
-                     Set => White_Space,
-                     From => Start,
-                     Test => Ada.Strings.Outside,
-                     First => First,
-                     Last => Last);
+                     Set    => White_Space,
+                     From   => Start,
+                     Test   => Ada.Strings.Outside,
+                     First  => First,
+                     Last   => Last);
                   if Last = 0 then
                      raise Card_Error with "invalid tracing card";
                   end if;
-                  C.Tracing := Natural'Value (From (First .. Last)) /= 0;
+                  C.Tracing :=
+                    Natural'Value (+(From (First .. Last))) /= 0;
                end;
             end return;
          when 'A' =>
@@ -274,7 +283,7 @@ package body Analytical_Engine.Card is
    is
    begin
       In_The_Framework.Store.Set (Col => C.Target_Column,
-                                  To => C.Value.Number.all);
+                                  To  => C.Value.Number.all);
    end Execute;
 
    procedure Execute (C : Operation_Card;
@@ -291,13 +300,13 @@ package body Analytical_Engine.Card is
    begin
       case C.Axis is
          when Mill.Ingress =>
-            In_The_Framework.Store.Get (Col => C.Column,
-                                        Result => Value,
+            In_The_Framework.Store.Get (Col      => C.Column,
+                                        Result   => Value,
                                         Preserve => C.Preserve);
             In_The_Framework.Mill.Set_Ingress (Value);
          when Mill.Ingress_Primed =>
-            In_The_Framework.Store.Get (Col => C.Column,
-                                        Result => Value,
+            In_The_Framework.Store.Get (Col      => C.Column,
+                                        Result   => Value,
                                         Preserve => C.Preserve);
             In_The_Framework.Mill.Set_Ingress_Primed (Value);
          when Mill.Egress =>
@@ -314,7 +323,7 @@ package body Analytical_Engine.Card is
    is
    begin
       In_The_Framework.Mill.Step_Axes (Direction => C.Direction,
-                                       Amount => C.Step_Count);
+                                       Amount    => C.Step_Count);
    end Execute;
 
    procedure Execute (C : Combinatorial_Card;
@@ -330,11 +339,12 @@ package body Analytical_Engine.Card is
    procedure Execute (C : Action_Card;
                       In_The_Framework : in out Framework.Instance)
    is
+      use Ada.Characters.Conversions;
    begin
       case C.Act is
          when Halt_Engine =>
             In_The_Framework.Panel.Log_Attendant_Message
-              ("Halt: " & To_String (C.Msg));
+              ("Halt: " & To_Wide_String (C.Msg));
             In_The_Framework.Card_Reader.Halt;
          when Ring_Bell =>
             In_The_Framework.Panel.Log_Attendant_Message ("Ting!");
@@ -361,14 +371,15 @@ package body Analytical_Engine.Card is
 
    function Image (C : Card) return String
    is
+      use Ada.Characters.Conversions;
    begin
       return
         "("
-        & Ada.Strings.Unbounded.To_String (C.Source_File)
-        & ":"
-        & Ada.Strings.Fixed.Trim (C.Line_Number'Img, Ada.Strings.Both)
-        & ") "
-        & Ada.Strings.Unbounded.To_String (C.Source);
+          & To_String (To_Wide_String (C.Source_File))
+          & ":"
+          & Ada.Strings.Fixed.Trim (C.Line_Number'Img, Ada.Strings.Both)
+          & ") "
+          & To_String (To_Wide_String (C.Source));
    end Image;
 
 end Analytical_Engine.Card;
