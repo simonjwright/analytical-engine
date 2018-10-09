@@ -78,7 +78,7 @@ package body Analytical_Engine.Output.Printer is
                   when ',' =>
                      --  Comma, if digits remain to be output
                      if Index > 0
-                       or else (for some C of Picture => C = '9')
+                       --  or else (for some C of Picture => C = '9')
                      then
                         Result := ',' & Result;
                      end if;
@@ -88,7 +88,7 @@ package body Analytical_Engine.Output.Printer is
                         Result := '-' & Result;
                         Sign_Output := True;
                      end if;
-                  when '@' =>
+                  when '@' | '±' =>
                      --  Plus or minus sign
                      Result := (if Negative then '-' else '+') & Result;
                      Sign_Output := True;

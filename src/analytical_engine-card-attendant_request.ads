@@ -31,16 +31,12 @@
 
 private package Analytical_Engine.Card.Attendant_Request is
 
-   type Card is abstract new Analytical_Engine.Card.Card with private;
-
    function Read (From : Wide_String) return Card'Class
    with Pre => From'Length > 0
                and then (From (From'First) = 'A'
                            or else From (From'First) = 'a');
 
 private
-
-   type Card is abstract new Analytical_Engine.Card.Card with null record;
 
    --  type Attendant_Request_Kind is
    --    (Calculation_Trace,

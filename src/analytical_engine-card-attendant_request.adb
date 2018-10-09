@@ -29,7 +29,7 @@ with GNAT.Regpat;
 package body Analytical_Engine.Card.Attendant_Request is
 
    Picture_Matcher : constant GNAT.Regpat.Pattern_Matcher
-     := GNAT.Regpat.Compile ("a\s+write\s+numbers\s+as\s+(.+)$",
+     := GNAT.Regpat.Compile ("a\s+write\s+numbers\s+as (.+)$",
                              Flags => GNAT.Regpat.Case_Insensitive);
 
    Row_Column_Matcher : constant GNAT.Regpat.Pattern_Matcher
