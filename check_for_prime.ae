@@ -1,0 +1,56 @@
+. Checks whether a number is prime. The example value (203) celebrates
+. the 203rd anniversary of Ada's 1815 birth in 2018.
+
+N001 203 the number to be checked
+
+N000 0   constant 0 - actually the default
+N002 1   constant 1
+N003 2   constant 2
+
+N004 3   starting test value
+
+A write in columns
+
+/        main loop: divide target by test value
+L001
+L004
+S010     store remainder (column 10 must be zero previously)
+-        check for zero
+Z010     load remainder, leaving column 10 zeroed
+L002     subtract 1
+CF?1     skip to print/halt if sign changed (i.e. was zero)
+CF+13    continue to check next divisor
+A write numbers as ##9
++        print the target number
+L001
+L000
+P
+A write annotation  is divisible by
+A write numbers as  ##9
++        print the divisor
+L004
+L000
+P
+A write new line
+H
++        check next possible factor
+Z004     load current candidate, clear store
+L003     add 2
+S004     store result
+*        square the candidate
+L004
+L004
+S010
+-
+L001     load target
+Z010     load (candidate squared), leaving column 10 zeroed
+CF?1     skip if sign changed (i.e. no divisor found)
+CB+35    back to main loop
+A write numbers as ##9
++        report the target is prime
+L001
+L000
+P
+A write annotation  is prime
+A write new line
+H
