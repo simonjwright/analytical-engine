@@ -100,8 +100,8 @@ indicated by `*` or `×`, division by `/` or `÷`.
 [Fourmilab Java implementation]: https://www.fourmilab.ch/babbage/cards.html
 
 When counting for Combinatorial Cards (conditional and unconditional
-jumps), remember that comment cards (cards starting with a period or
-white space) need to be included!
+jumps), remember that comment cards (blank cards, or cards starting
+with a period or white space) need to be included!
 
 ### Changes
 
