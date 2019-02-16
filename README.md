@@ -31,9 +31,9 @@ The Ada emulator is written using [Ada2012][], and uses the
 [GNU Multiple Precision Arithmetic library][], via the
 [GMP binding in GNATCOLL][].
 
-If you have the [FSF GCC 6.1.0 binary for OS X][] a suitable library
-is provided. Otherwise, GMP and GNATCOLL are reasonably
-straightforward to build.
+If you have one of the [FSF GCC binaries for OS X][] (6.1 or later), a
+suitable library is provided. Otherwise, GMP and GNATCOLL are
+reasonably straightforward to build.
 
 [Ada2012]: http://www.ada-auth.org/standards/rm12_w_tc1/html/RM-TOC.html
 
@@ -41,7 +41,7 @@ straightforward to build.
 
 [GMP binding in GNATCOLL]: https://github.com/AdaCore/gnatcoll/blob/master/src/gmp/gnatcoll-gmp-integers.ads
 
-[FSF GCC 6.1.0 binary for OS X]: https://sourceforge.net/projects/gnuada/files/GNAT_GCC%20Mac%20OS%20X/6.1.0/
+[FSF GCC binaries for OS X]: https://sourceforge.net/projects/gnuada/files/GNAT_GCC%20Mac%20OS%20X/
 
 ## Running
 
@@ -65,7 +65,7 @@ transferring the value on the source to the destination as the source
 digits were rotated back to zeros.
 
 If `-z` is given, overwriting will be allowed; otherwise, an error
-will be reported ane exceution will halt.
+will be reported and execution will halt.
 
 [this paper]: http://rclab.de/rclab/_media/analyticalengine/aal_noteg_glaschick_v1.2.pdf
 
@@ -94,13 +94,20 @@ These card types have not been implemented (yet):
     * Card Library Inclusion Requests
     * Decimal Place Expansion Cards
 
-As a minor change, lower case can be used: `n001 42` is
-acceptable (it stores 42 into column 1).
-
 As in the [Fourmilab Java implementation][], multiplication can be
 indicated by `*` or `×`, division by `/` or `÷`.
 
 [Fourmilab Java implementation]: https://www.fourmilab.ch/babbage/cards.html
+
+When counting for Combinatorial Cards (conditional and unconditional
+jumps), remember that comment cards (cards starting with a period or
+white space) need to be included!
+
+### Changes
+
+  * As a minor change, lower case can be used: `n001 42` is acceptable
+  (it stores 42 into column 1).
+  * Text after the required content is ignored, so comments can be included: `n001 42 the answer` is acceptable.
 
 ## Examples
 
@@ -126,12 +133,15 @@ might have hoped for. To deal with this, all real values are scaled by
 For more on this, see the notes on _Stepping Up and Down Cards_ in the
 [Fourmilab Java implementation][].
 
+[Sketch of the Analytical Engine]: https://www.fourmilab.ch/babbage/sketch.html
+
 The file `bernouilli5.ae` adds another "iteration" to the above
 program; the previously computed B7 is stored on column 24, and
 operations 13 to 23 are repeated once more (now using column 24 as
 input at operation 21).
 
-[Sketch of the Analytical Engine]: https://www.fourmilab.ch/babbage/sketch.html
+The file `check_for_prime.ae` determines whether a number is
+prime. It's set to check 203 (AAL's 203rd birthday was in 2018).
 
 ## Performance
 

@@ -6,12 +6,53 @@ N001 203 the number to be checked
 N000 0   constant 0 - actually the default
 N002 1   constant 1
 N003 2   constant 2
+N004 3   starting test divisor
 
-N004 3   starting test value
+. column 10 is used as a scratch register; it must be zero before
+. storing into it, so always load using Z10
 
 A write in columns
 
-/        main loop: divide target by test value
+. if target number is < 4, it's prime
++        add 1 to 3, makes 4
+L004
+L002
+S010
+-        subtract 4 from target number
+L001
+Z010     leave column 10 zero
+CF?1     skip if sign changed (target < 4)
+CF+9     continue
+A write numbers as ##9
++        report the target is prime
+L001
+L000
+P
+A write annotation  is prime
+A write new line
+H
+
+. if target number is divisible by 2, it isn't prime
+/
+L001
+L003
+S010     store remainder
+-        check for zero
+Z010     load remainder, leaving column 10 zeroed
+L002     subtract 1
+CF?1     skip to print/halt if sign changed (i.e. was zero)
+CF+8     continue to check next divisor
+A write numbers as ##9
++        print the target number
+L001
+L000
+P
+A write annotation  is divisible by 2
+A write new line
+H
+
+. main loop
+/        divide target by test value
 L001
 L004
 S010     store remainder (column 10 must be zero previously)
@@ -19,7 +60,9 @@ S010     store remainder (column 10 must be zero previously)
 Z010     load remainder, leaving column 10 zeroed
 L002     subtract 1
 CF?1     skip to print/halt if sign changed (i.e. was zero)
-CF+13    continue to check next divisor
+CF+15    continue to check next divisor
+
+. divisor found!
 A write numbers as ##9
 +        print the target number
 L001
@@ -33,6 +76,7 @@ L000
 P
 A write new line
 H
+
 +        check next possible factor
 Z004     load current candidate, clear store
 L003     add 2
@@ -45,7 +89,9 @@ S010
 L001     load target
 Z010     load (candidate squared), leaving column 10 zeroed
 CF?1     skip if sign changed (i.e. no divisor found)
-CB+35    back to main loop
+CB+39    back to main loop
+
+. no divisor found!
 A write numbers as ##9
 +        report the target is prime
 L001
