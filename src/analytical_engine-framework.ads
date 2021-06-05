@@ -58,17 +58,17 @@ private
                   Attendant : not null Analytical_Engine.Attendant.Instance_P)
      is new Ada.Finalization.Limited_Controlled with record
 
-        Mill : Analytical_Engine.Mill.Instance_P
-          (Panel     => Panel,
-           Attendant => Attendant);
+        Mill : Analytical_Engine.Mill.Instance_P;
+          --  (Panel     => Panel,
+          --   Attendant => Attendant);
 
-        Store : Analytical_Engine.Store.Instance_P
-          (Panel     => Panel,
-           Attendant => Attendant);
+        Store : Analytical_Engine.Store.Instance_P;
+          --  (Panel     => Panel,
+          --   Attendant => Attendant);
 
-        Card_Reader : Analytical_Engine.Card_Reader.Instance_P
-          (Panel     => Panel,
-           Attendant => Attendant);
+        Card_Reader : Analytical_Engine.Card_Reader.Instance_P;
+          --  (Panel     => Panel,
+          --   Attendant => Attendant);
 
         Output      : Analytical_Engine.Output.Class_P;
 

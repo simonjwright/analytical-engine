@@ -22,6 +22,8 @@
 with Ada.Wide_Text_IO; use Ada.Wide_Text_IO;
 package body Analytical_Engine.Annunciator_Panel.Command_Line is
 
+   pragma SPARK_Mode (Off);
+
    procedure Log_Attendant_Message (Panel : Instance; Msg : Wide_String)
    is
       pragma Unreferenced (Panel);

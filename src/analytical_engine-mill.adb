@@ -23,6 +23,8 @@ with Ada.Characters.Conversions;
 
 package body Analytical_Engine.Mill is
 
+   pragma SPARK_Mode;
+
    Max_Value : constant Big_Integer
      := Make ("100000000000000000000000000000000000000000000000000");
    Min_Value : constant Big_Integer := -Max_Value;
@@ -229,18 +231,6 @@ package body Analytical_Engine.Mill is
             end;
       end case;
    end Step_Axes;
-
-   procedure Initialize (This : in out Instance)
-   is
-   begin
-      This.Op := None;
-      This.Ingress_Valid := False;
-      This.Run_Up := False;
-      Set (This.Ingress, Zero);
-      Set (This.Ingress_Primed, Zero);
-      Set (This.Egress, Zero);
-      Set (This.Egress_Primed, Zero);
-   end Initialize;
 
    procedure Clear_Ingress (This : in out Instance'Class)
    is

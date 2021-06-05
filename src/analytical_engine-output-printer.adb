@@ -24,6 +24,8 @@ with Ada.Wide_Text_IO; use Ada.Wide_Text_IO;
 
 package body Analytical_Engine.Output.Printer is
 
+   pragma SPARK_Mode (Off);
+
    procedure Output (To : Instance; S : Wide_String)
    is
    begin
@@ -78,7 +80,7 @@ package body Analytical_Engine.Output.Printer is
                   when ',' =>
                      --  Comma, if digits remain to be output
                      if Index > 0
-                       --  or else (for some C of Picture => C = '9')
+                        --  or else (for some C of Picture => C = '9')
                      then
                         Result := ',' & Result;
                      end if;

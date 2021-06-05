@@ -21,6 +21,8 @@
 
 package body Analytical_Engine.Annunciator_Panel is
 
+   pragma SPARK_Mode (Off);
+
    procedure Set_Tracing (This : in out Instance; To : Boolean) is
    begin
       This.Tracing := To;

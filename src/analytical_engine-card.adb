@@ -22,12 +22,24 @@
 with Ada.Wide_Characters.Handling;
 with Ada.Strings.Fixed;
 with Ada.Strings.Wide_Fixed;
-with Ada.Unchecked_Deallocation;
+with GNATCOLL.GMP.Integers;
 
 with Analytical_Engine.Card.Attendant_Request;
-with Analytical_Engine.Framework;
+with Analytical_Engine.Mill;
+with Analytical_Engine.Store;
+
+with Analytical_Engine.Card.Action_Card;
+with Analytical_Engine.Card.Combinatorial_Card;
+with Analytical_Engine.Card.Comment_Card;
+with Analytical_Engine.Card.Number_Card;
+with Analytical_Engine.Card.Operation_Card;
+with Analytical_Engine.Card.Stepping_Card;
+with Analytical_Engine.Card.Tracing_Card;
+with Analytical_Engine.Card.Variable_Card;
 
 package body Analytical_Engine.Card is
+
+   use GNATCOLL.GMP.Integers;
 
    --  Note, these values are actually 1 more (less) than the maximum
    --  (minimum) possible value that can be held on a column.
@@ -44,7 +56,7 @@ package body Analytical_Engine.Card is
       Leading : Wide_Character;
    begin
       if From'Length = 0 or else From (Start) in ' ' | '.' then
-         return C : Comment_Card do
+         return C : Comment_Card.Card do
             C.Source := To_Unbounded_Wide_String (From);
          end return;
       end if;
@@ -52,7 +64,7 @@ package body Analytical_Engine.Card is
       Start := Start + 1;
       case Leading is
          when 'N' =>
-            return C : Number_Card do
+            return C : Number_Card.Card do
                C.Source := To_Unbounded_Wide_String (From);
                declare
                   First : Positive;
@@ -81,17 +93,17 @@ package body Analytical_Engine.Card is
                   if Last = 0 then
                      raise Card_Error with "invalid number card";
                   end if;
-                  C.Value.Number :=
+                  C.Value :=
                     new Big_Integer'(Make (+(From (First .. Last))));
-                  if C.Value.Number.all > Max_Value
-                    or C.Value.Number.all < Min_Value
+                  if C.Value.all > Max_Value
+                    or C.Value.all < Min_Value
                   then
                      raise Card_Error with "invalid number card";
                   end if;
                end;
             end return;
          when 'L' | 'Z' | 'S' =>
-            return C : Variable_Card do
+            return C : Variable_Card.Card do
                C.Source := To_Unbounded_Wide_String (From);
                declare
                   First : Positive;
@@ -131,7 +143,7 @@ package body Analytical_Engine.Card is
                end;
             end return;
          when '+' | '-' | '*' | '×' | '/' | '÷' =>
-            return C : Operation_Card do
+            return C : Operation_Card.Card do
                C.Source := To_Unbounded_Wide_String (From);
                C.Op := (case Leading is
                            when '+'       => Mill.Add,
@@ -141,7 +153,7 @@ package body Analytical_Engine.Card is
                            when others    => raise Program_Error);
             end return;
          when '>' | '<' =>
-            return C : Stepping_Card do
+            return C : Stepping_Card.Card do
                C.Source := To_Unbounded_Wide_String (From);
                C.Direction := (case Leading is
                                   when '>'    => Mill.Down,
@@ -169,7 +181,7 @@ package body Analytical_Engine.Card is
                end;
             end return;
          when 'C' =>
-            return C : Combinatorial_Card do
+            return C : Combinatorial_Card.Card do
                C.Source := To_Unbounded_Wide_String (From);
                begin
                   declare
@@ -219,11 +231,11 @@ package body Analytical_Engine.Card is
                end;
             end return;
          when 'B' | 'P' | 'H' =>
-            return C : Action_Card
+            return C : Action_Card.Card
               (Act => (case Leading is
-                          when 'B'    => Ring_Bell,
-                          when 'P'    => Print_Last_Result,
-                          when 'H'    => Halt_Engine,
+                          when 'B'    => Action_Card.Ring_Bell,
+                          when 'P'    => Action_Card.Print_Last_Result,
+                          when 'H'    => Action_Card.Halt_Engine,
                           when others => raise Program_Error)) do
                C.Source := To_Unbounded_Wide_String (From);
                case Leading is
@@ -236,7 +248,7 @@ package body Analytical_Engine.Card is
                end case;
             end return;
          when 'T' =>
-            return C : Tracing_Card do
+            return C : Tracing_Card.Card do
                declare
                   First : Positive;
                   Last : Natural;
@@ -261,113 +273,6 @@ package body Analytical_Engine.Card is
             raise Card_Error with "unrecognised card";
       end case;
    end Read;
-
-   procedure Adjust (Obj : in out Controlled_Big_Integer)
-   is
-      Tmp : constant Big_Integer_P := new Big_Integer;
-   begin
-      Set (Tmp.all, Obj.Number.all);
-      Obj.Number := Tmp;
-   end Adjust;
-
-   procedure Finalize (Obj : in out Controlled_Big_Integer)
-   is
-      procedure Free
-        is new Ada.Unchecked_Deallocation (Big_Integer, Big_Integer_P);
-   begin
-      Free (Obj.Number);
-   end Finalize;
-
-   procedure Execute (C : Number_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      In_The_Framework.Store.Set (Col => C.Target_Column,
-                                  To  => C.Value.Number.all);
-   end Execute;
-
-   procedure Execute (C : Operation_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      In_The_Framework.Mill.Set_Operation (C.Op);
-   end Execute;
-
-   procedure Execute (C : Variable_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-      Value : Big_Integer;
-   begin
-      case C.Axis is
-         when Mill.Ingress =>
-            In_The_Framework.Store.Get (Col      => C.Column,
-                                        Result   => Value,
-                                        Preserve => C.Preserve);
-            In_The_Framework.Mill.Set_Ingress (Value);
-         when Mill.Ingress_Primed =>
-            In_The_Framework.Store.Get (Col      => C.Column,
-                                        Result   => Value,
-                                        Preserve => C.Preserve);
-            In_The_Framework.Mill.Set_Ingress_Primed (Value);
-         when Mill.Egress =>
-            In_The_Framework.Mill.Get_Egress (Value);
-            In_The_Framework.Store.Set (Col => C.Column, To => Value);
-         when Mill.Egress_Primed =>
-            In_The_Framework.Mill.Get_Egress_Primed (Value);
-            In_The_Framework.Store.Set (Col => C.Column, To => Value);
-      end case;
-   end Execute;
-
-   procedure Execute (C : Stepping_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      In_The_Framework.Mill.Step_Axes (Direction => C.Direction,
-                                       Amount    => C.Step_Count);
-   end Execute;
-
-   procedure Execute (C : Combinatorial_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      if not C.Conditional or else In_The_Framework.Mill.Run_Up_Set then
-         In_The_Framework.Card_Reader.Step
-           (if C.Advance then C.Card_Count else -C.Card_Count);
-      end if;
-   end Execute;
-
-   procedure Execute (C : Action_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-      use Ada.Characters.Conversions;
-   begin
-      case C.Act is
-         when Halt_Engine =>
-            In_The_Framework.Panel.Log_Attendant_Message
-              ("Halt: " & To_Wide_String (C.Msg));
-            In_The_Framework.Card_Reader.Halt;
-         when Ring_Bell =>
-            In_The_Framework.Panel.Log_Attendant_Message ("Ting!");
-         when Print_Last_Result =>
-            declare
-               Result : Big_Integer;
-            begin
-               In_The_Framework.Mill.Get_Egress (Result);
-               In_The_Framework.Output.Output (Result);
-            end;
-      end case;
-   end Execute;
-
-   procedure Execute (C : Comment_Card;
-                      In_The_Framework : in out Framework.Instance)
-     is null;
-
-   procedure Execute (C : Tracing_Card;
-                      In_The_Framework : in out Framework.Instance)
-   is
-   begin
-      In_The_Framework.Panel.Set_Tracing (To => C.Tracing);
-   end Execute;
 
    function Image (C : Card) return String
    is

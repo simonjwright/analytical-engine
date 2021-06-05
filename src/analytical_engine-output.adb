@@ -21,6 +21,8 @@
 
 package body Analytical_Engine.Output is
 
+   pragma SPARK_Mode (Off);
+
    procedure Set_Picture
      (This : in out Instance;
       To : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String)

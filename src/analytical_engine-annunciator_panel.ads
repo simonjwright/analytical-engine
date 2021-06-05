@@ -19,11 +19,14 @@
 --  program; see the files COPYING3 and COPYING.RUNTIME respectively.
 --  If not, see <http://www.gnu.org/licenses/>.
 
-private with Ada.Finalization;
+--  private with Ada.Finalization;
 package Analytical_Engine.Annunciator_Panel is
 
+   pragma SPARK_Mode (On);
+   pragma Elaborate_Body;
+
    type Instance is abstract tagged limited private;
-   type Class_P is access all Instance'Class;
+   type Class_P is access Instance'Class;
 
    procedure Log_Attendant_Message
      (This : Instance; Msg : Wide_String) is abstract;
@@ -37,10 +40,10 @@ package Analytical_Engine.Annunciator_Panel is
 
 private
 
-   type Instance
-     is abstract new Ada.Finalization.Limited_Controlled with record
+   type Instance is abstract tagged limited record
+      --  is abstract new Ada.Finalization.Limited_Controlled with record
         Tracing : Boolean := False;
-     end record;
+   end record;
 
    function Tracing (This : Instance) return Boolean is (This.Tracing);
 

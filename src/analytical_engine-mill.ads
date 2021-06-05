@@ -23,8 +23,10 @@ with Analytical_Engine.Annunciator_Panel;
 with Analytical_Engine.Attendant;
 with GNATCOLL.GMP.Integers; use GNATCOLL.GMP.Integers;
 
-private with Ada.Finalization;
 package Analytical_Engine.Mill is
+
+   pragma SPARK_Mode;
+   --  pragma Elaborate_Body;
 
    type Axis is
      (Ingress,
@@ -48,7 +50,7 @@ package Analytical_Engine.Mill is
      (Panel     : not null Annunciator_Panel.Class_P;
       Attendant : not null Analytical_Engine.Attendant.Instance_P)
    is tagged limited private;
-   type Instance_P is access all Instance;
+   type Instance_P is access Instance;
 
    procedure Set_Operation (This : in out Instance; To : Operation);
 
@@ -80,18 +82,15 @@ private
    type Instance
      (Panel     : not null Annunciator_Panel.Class_P;
       Attendant : not null Analytical_Engine.Attendant.Instance_P)
-     is new Ada.Finalization.Limited_Controlled with record
+     is tagged limited record
         Op             : Operation_Base := None;
         Ingress_Valid  : Boolean        := False;
-        Ingress        : Big_Integer;
+        Ingress        : Big_Integer;  -- initialized to zero
         Ingress_Primed : Big_Integer;
         Egress         : Big_Integer;
         Egress_Primed  : Big_Integer;
         Run_Up         : Boolean        := False;
      end record;
-
-   overriding
-   procedure Initialize (This : in out Instance);
 
    function Run_Up_Set (This : Instance) return Boolean is (This.Run_Up);
 

@@ -24,14 +24,12 @@ with Ada.Strings.Wide_Unbounded;
 limited with Analytical_Engine.Framework;
 
 private with Ada.Characters.Conversions;
-private with Ada.Finalization;
 private with Ada.Strings.Wide_Maps;
-private with Analytical_Engine.Mill;
-private with Analytical_Engine.Store;
-private with GNATCOLL.GMP.Integers;
 private with System;
 
 package Analytical_Engine.Card is
+
+   pragma SPARK_Mode (On);
 
    --  Notes from http://www.fourmilab.ch/babbage/cards.html.
 
@@ -63,7 +61,7 @@ package Analytical_Engine.Card is
       Source_File : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
       Source      : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
    end record;
-   type Card_P is access all Card'Class;
+   type Card_P is access Card'Class;
 
    procedure Execute
      (C : Card;
@@ -80,7 +78,6 @@ package Analytical_Engine.Card is
 private
 
    use Ada.Strings.Wide_Unbounded;
-   use GNATCOLL.GMP.Integers;
 
    function Equals (L, R : Card'Class) return Boolean is
      (System."=" (L'Address, R'Address));
@@ -93,83 +90,74 @@ private
    White_Space_Or_Plus : constant Ada.Strings.Wide_Maps.Wide_Character_Set
      := Ada.Strings.Wide_Maps.To_Set (+(" +" & ASCII.HT));
 
-   type Big_Integer_P is access Big_Integer; -- Big_Integer is limited
-   type Controlled_Big_Integer is new Ada.Finalization.Controlled with record
-      Number : Big_Integer_P;
-   end record;
-   overriding
-   procedure Adjust (Obj : in out Controlled_Big_Integer); -- deep copy
-   overriding
-   procedure Finalize (Obj : in out Controlled_Big_Integer);
+   --  type Number_Card is new Card with record
+   --     Target_Column : Store.Column;
+   --     Value         : Big_Integer_P;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Number_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Number_Card is new Card with record
-      Target_Column : Store.Column;
-      Value         : Controlled_Big_Integer;
-   end record;
-   overriding
-   procedure Execute (C : Number_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Operation_Card is new Card with record
+   --     Op : Mill.Operation;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Operation_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Operation_Card is new Card with record
-      Op : Mill.Operation;
-   end record;
-   overriding
-   procedure Execute (C : Operation_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Variable_Card is new Card with record
+   --     Axis     : Mill.Axis; -- Ingress axes are to mill, egress to store
+   --     Column   : Store.Column;
+   --     Preserve : Boolean;   -- If false and the value is being sent to
+   --                           -- the mill, the source column is reset to
+   --                           -- zero after the value has been
+   --                           -- retrieved.
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Variable_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Variable_Card is new Card with record
-      Axis     : Mill.Axis; -- Ingress axes are to mill, egress to store
-      Column   : Store.Column;
-      Preserve : Boolean;   -- If false and the value is being sent to
-                            -- the mill, the source column is reset to
-                            -- zero after the value has been
-                            -- retrieved.
-   end record;
-   overriding
-   procedure Execute (C : Variable_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Stepping_Card is new Card with record
+   --     Direction  : Mill.Step;
+   --     Step_Count : Positive;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Stepping_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Stepping_Card is new Card with record
-      Direction  : Mill.Step;
-      Step_Count : Positive;
-   end record;
-   overriding
-   procedure Execute (C : Stepping_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Combinatorial_Card is new Card with record
+   --     Advance     : Boolean;
+   --     Conditional : Boolean;
+   --     Card_Count  : Positive;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Combinatorial_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Combinatorial_Card is new Card with record
-      Advance     : Boolean;
-      Conditional : Boolean;
-      Card_Count  : Positive;
-   end record;
-   overriding
-   procedure Execute (C : Combinatorial_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Action_Kind is (Ring_Bell, Halt_Engine, Print_Last_Result);
+   --  type Action_Card (Act : Action_Kind) is new Card with record
+   --     case Act is
+   --        when Halt_Engine =>
+   --           Msg : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
+   --        when others =>
+   --           null;
+   --     end case;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Action_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Action_Kind is (Ring_Bell, Halt_Engine, Print_Last_Result);
-   type Action_Card (Act : Action_Kind) is new Card with record
-      case Act is
-         when Halt_Engine =>
-            Msg : Ada.Strings.Wide_Unbounded.Unbounded_Wide_String;
-         when others =>
-            null;
-      end case;
-   end record;
-   overriding
-   procedure Execute (C : Action_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Comment_Card is new Card with null record;
+   --  overriding
+   --  procedure Execute (C : Comment_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
-   type Comment_Card is new Card with null record;
-   overriding
-   procedure Execute (C : Comment_Card;
-                      In_The_Framework : in out Framework.Instance);
-
-   type Tracing_Card is new Card with record
-      Tracing : Boolean;
-   end record;
-   overriding
-   procedure Execute (C : Tracing_Card;
-                      In_The_Framework : in out Framework.Instance);
+   --  type Tracing_Card is new Card with record
+   --     Tracing : Boolean;
+   --  end record;
+   --  overriding
+   --  procedure Execute (C : Tracing_Card;
+   --                     In_The_Framework : in out Framework.Instance);
 
    --  type Curve_Drawing_Card is new Card with private;
 

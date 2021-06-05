@@ -26,6 +26,8 @@ with GNATCOLL.GMP.Integers;
 
 package Analytical_Engine.Output is
 
+   pragma SPARK_Mode (Off);
+
    type Instance (Panel : not null Annunciator_Panel.Class_P)
      is abstract new Ada.Finalization.Limited_Controlled with private;
    type Class_P is access all Instance'Class;

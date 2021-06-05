@@ -21,7 +21,7 @@
 
 with Ada.Exceptions;
 with Ada.IO_Exceptions;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO;
 with GNAT.Command_Line;
 
 with Analytical_Engine.Annunciator_Panel.Command_Line;
@@ -34,6 +34,8 @@ with Analytical_Engine.Store;
 use Analytical_Engine;
 
 procedure Aes is
+
+   pragma SPARK_Mode (Off);
 
    Command_Line_Config : GNAT.Command_Line.Command_Line_Configuration;
    Tracing : aliased Boolean := False;
