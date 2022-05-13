@@ -29,8 +29,6 @@ private with System;
 
 package Analytical_Engine.Card is
 
-   pragma SPARK_Mode (On);
-
    --  Notes from http://www.fourmilab.ch/babbage/cards.html.
 
    --  Program Cards

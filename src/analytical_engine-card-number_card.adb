@@ -2,8 +2,6 @@ with Analytical_Engine.Framework;  -- was 'limited with' in parent spec
 
 package body Analytical_Engine.Card.Number_Card is
 
-   pragma SPARK_Mode (On);
-
    procedure Execute
      (C : Number_Card;
       In_The_Framework : in out Analytical_Engine.Framework.Instance)

@@ -24,8 +24,6 @@ with Ada.Wide_Text_IO; use Ada.Wide_Text_IO;
 
 package body Analytical_Engine.Output.Printer is
 
-   pragma SPARK_Mode (Off);
-
    procedure Output (To : Instance; S : Wide_String)
    is
    begin

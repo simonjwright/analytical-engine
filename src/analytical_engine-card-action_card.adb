@@ -4,8 +4,6 @@ with GNATCOLL.GMP.Integers;
 
 package body Analytical_Engine.Card.Action_Card is
 
-   pragma SPARK_Mode (On);
-
    use GNATCOLL.GMP.Integers;
 
    procedure Execute (C : Action_Card;

@@ -2,7 +2,6 @@ with Analytical_Engine.Mill;
 
 private package Analytical_Engine.Card.Stepping_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Stepping_Card is new Card with record

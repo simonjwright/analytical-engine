@@ -3,7 +3,6 @@ with Analytical_Engine.Store;
 
 private package Analytical_Engine.Card.Variable_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Variable_Card is new Card with record

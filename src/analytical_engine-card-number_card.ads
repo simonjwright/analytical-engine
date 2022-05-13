@@ -4,7 +4,6 @@ with Analytical_Engine.Store;
 
 private package Analytical_Engine.Card.Number_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Big_Integer_P is access GNATCOLL.GMP.Integers.Big_Integer;

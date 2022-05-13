@@ -1,6 +1,5 @@
 private package Analytical_Engine.Card.Tracing_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Tracing_Card is new Card with record

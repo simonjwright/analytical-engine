@@ -22,7 +22,6 @@
 with Analytical_Engine.Annunciator_Panel;
 package Analytical_Engine.Output.Printer is
 
-   pragma SPARK_Mode (Off);
    pragma Elaborate_Body;
 
    type Instance (Panel : not null Annunciator_Panel.Class_P)

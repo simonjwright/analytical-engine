@@ -21,7 +21,6 @@
 
 package Analytical_Engine.Annunciator_Panel.Command_Line is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Instance is new Annunciator_Panel.Instance with private;

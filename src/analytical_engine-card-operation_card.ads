@@ -2,7 +2,6 @@ with Analytical_Engine.Mill;
 
 private package Analytical_Engine.Card.Operation_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Operation_Card is new Card with record

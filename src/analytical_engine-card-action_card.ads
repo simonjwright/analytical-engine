@@ -1,6 +1,5 @@
 private package Analytical_Engine.Card.Action_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Action_Kind is (Ring_Bell, Halt_Engine, Print_Last_Result);

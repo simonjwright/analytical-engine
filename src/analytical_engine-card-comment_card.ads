@@ -1,8 +1,5 @@
 private package Analytical_Engine.Card.Comment_Card is
 
-   pragma SPARK_Mode (On);
-   --  pragma Elaborate_Body;
-
    type Comment_Card is new Card with null record;
    overriding
    procedure Execute (C : Comment_Card;

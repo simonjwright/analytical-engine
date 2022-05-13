@@ -23,8 +23,6 @@ with Ada.Characters.Conversions;
 
 package body Analytical_Engine.Mill is
 
-   pragma SPARK_Mode;
-
    Max_Value : constant Big_Integer
      := Make ("100000000000000000000000000000000000000000000000000");
    Min_Value : constant Big_Integer := -Max_Value;

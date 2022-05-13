@@ -35,8 +35,6 @@ use Analytical_Engine;
 
 procedure Aes is
 
-   pragma SPARK_Mode (Off);
-
    Command_Line_Config : GNAT.Command_Line.Command_Line_Configuration;
    Tracing : aliased Boolean := False;
    Allow_Overwrite_Nonzero : aliased Boolean := False;

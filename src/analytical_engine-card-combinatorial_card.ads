@@ -1,6 +1,5 @@
 private package Analytical_Engine.Card.Combinatorial_Card is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Combinatorial_Card is new Card with record

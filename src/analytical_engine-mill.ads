@@ -25,9 +25,6 @@ with GNATCOLL.GMP.Integers; use GNATCOLL.GMP.Integers;
 
 package Analytical_Engine.Mill is
 
-   pragma SPARK_Mode;
-   --  pragma Elaborate_Body;
-
    type Axis is
      (Ingress,
       Ingress_Primed,

@@ -22,7 +22,6 @@
 --  private with Ada.Finalization;
 package Analytical_Engine.Annunciator_Panel is
 
-   pragma SPARK_Mode (On);
    pragma Elaborate_Body;
 
    type Instance is abstract tagged limited private;
